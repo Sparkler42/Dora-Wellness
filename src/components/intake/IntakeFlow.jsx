@@ -4,11 +4,17 @@ import { T } from "../../styles/tokens";
 import { intakeQuestions } from "../../data/intake-questions";
 import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
+import WelcomeScreen from "./WelcomeScreen";
 
 export default function IntakeFlow() {
   const { setProfile, setScreen, setNotifs } = useApp();
+  const [showWelcome, setShowWelcome] = useState(true);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
+
+  if (showWelcome) {
+    return <WelcomeScreen onStart={() => setShowWelcome(false)} />;
+  }
 
   const q = intakeQuestions[step];
   const ans = answers[q.id];
