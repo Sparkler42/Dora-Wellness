@@ -46,6 +46,7 @@ export function AppProvider({ children }) {
   const [notifs, setNotifs] = useState(saved?.notifs || defaultNotifs);
   const [journal, setJournal] = useState(saved?.journal || []);
   const [medicalHistory, setMedicalHistory] = useState(saved?.medicalHistory || null);
+  const [deviceUsage, setDeviceUsage] = useState(saved?.deviceUsage || { enabled: false, sessions: [], dailyGoal: 120 });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -53,8 +54,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -76,6 +77,7 @@ export function AppProvider({ children }) {
     notifs, setNotifs,
     journal, setJournal,
     medicalHistory, setMedicalHistory,
+    deviceUsage, setDeviceUsage,
     mounted,
     completeExercise,
   };
