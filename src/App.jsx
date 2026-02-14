@@ -11,6 +11,7 @@ import ExerciseRunner from "./components/exercises/ExerciseRunner";
 import PaywallModal from "./components/profile/PaywallModal";
 import NotificationsModal from "./components/profile/NotificationsModal";
 import DeviceWellnessModal from "./components/profile/DeviceWellnessModal";
+import MedicalHistory from "./components/profile/MedicalHistory";
 import { useApp } from "./context/AppContext";
 import { EX } from "./data/exercises";
 import { intentions } from "./data/intentions";
@@ -304,7 +305,7 @@ METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneTod
 
 // ═══ PROFILE TAB ══════════════════════════════════════════════
 function ProfileTab() {
-  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen } = useApp();
+  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory } = useApp();
 
   return (
     <div style={{ paddingBottom: 20 }}>
@@ -328,6 +329,7 @@ function ProfileTab() {
 
       {[
         { icon: "bell", c: T.ac, l: "Notifications", a: () => setModal({ t: "notifs" }) },
+        { icon: "medical", c: T.sg, l: "Medical History", s: medicalHistory ? "Completed" : "Not yet filled", a: () => setScreen("medical") },
         { icon: "phone", c: T.oc, l: "Device Wellness", a: () => setModal({ t: "device" }) },
         { icon: "star", c: T.acS, l: "Upgrade Plan", a: () => setModal({ t: "pay" }) },
         { icon: "back", c: T.txL, l: "Retake Intake", a: () => setScreen("retake") },
@@ -336,7 +338,10 @@ function ProfileTab() {
           <div style={{ width: 40, height: 40, borderRadius: 12, background: it.c + "15", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <Icon n={it.icon} s={20} c={it.c} />
           </div>
-          <span style={{ flex: 1, fontSize: 15, fontWeight: 500, color: T.tx }}>{it.l}</span>
+          <div style={{ flex: 1 }}>
+            <span style={{ fontSize: 15, fontWeight: 500, color: T.tx }}>{it.l}</span>
+            {it.s && <p style={{ margin: "2px 0 0", fontSize: 12, color: T.txL }}>{it.s}</p>}
+          </div>
           <Icon n="arrow" s={16} c={T.txL} />
         </div>
       ))}
@@ -358,7 +363,7 @@ function ProfileTab() {
 // ═══ MAIN APP ═════════════════════════════════════════════════
 export default function App() {
   const {
-    screen, tab, setTab, modal, setModal,
+    screen, setScreen, tab, setTab, modal, setModal,
     tier, setTier, completeExercise,
   } = useApp();
   const [runningExercise, setRunningExercise] = useState(null);
@@ -366,6 +371,7 @@ export default function App() {
   // Show intake flow
   if (screen === "intake") return <IntakeFlow />;
   if (screen === "retake") return <IntakeFlow skipWelcome />;
+  if (screen === "medical") return <MedicalHistory onBack={() => setScreen("app")} />;
 
   const startExercise = (ex) => {
     setRunningExercise(ex);

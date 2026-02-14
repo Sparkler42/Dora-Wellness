@@ -82,6 +82,16 @@ export default function Icon({ n, s = 22, c = T.txM }) {
         <path d="M6 1v3M10 1v3M14 1v3" {...p} />
       </>
     ),
+    medical: (
+      <>
+        <path d="M12 2a3 3 0 00-3 3v4H5a3 3 0 000 6h4v4a3 3 0 006 0v-4h4a3 3 0 000-6h-4V5a3 3 0 00-3-3z" {...p} />
+      </>
+    ),
+    upload: (
+      <>
+        <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M17 8l-5-5-5 5M12 3v12" {...p} />
+      </>
+    ),
     clock: (
       <>
         <circle cx="12" cy="12" r="9" {...p} />

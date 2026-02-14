@@ -45,6 +45,7 @@ export function AppProvider({ children }) {
   const [streak, setStreak] = useState(saved?.streak || 0);
   const [notifs, setNotifs] = useState(saved?.notifs || defaultNotifs);
   const [journal, setJournal] = useState(saved?.journal || []);
+  const [medicalHistory, setMedicalHistory] = useState(saved?.medicalHistory || null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -52,8 +53,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -74,6 +75,7 @@ export function AppProvider({ children }) {
     streak, setStreak,
     notifs, setNotifs,
     journal, setJournal,
+    medicalHistory, setMedicalHistory,
     mounted,
     completeExercise,
   };
