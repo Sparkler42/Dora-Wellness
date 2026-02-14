@@ -6,9 +6,9 @@ import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
 
-export default function IntakeFlow() {
+export default function IntakeFlow({ skipWelcome = false }) {
   const { setProfile, setScreen, setNotifs } = useApp();
-  const [showWelcome, setShowWelcome] = useState(true);
+  const [showWelcome, setShowWelcome] = useState(!skipWelcome);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
 
