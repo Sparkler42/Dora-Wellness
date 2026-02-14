@@ -35,5 +35,5 @@ export function getRecommendations(profile) {
 
 export function isLocked(ex, tier) {
   if (tier !== "free") return false;
-  return !["yoga", "stretch", "strength", "barefoot", "somatic", "nutrition", "meditation", "selfaware"].includes(ex.id);
+  return !["yoga", "stretch", "strength", "barefoot", "somatic", "nutrition", "meditation", "selfaware", "imagine"].includes(ex.id);
 }
