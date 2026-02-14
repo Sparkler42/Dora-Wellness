@@ -330,7 +330,7 @@ function ProfileTab() {
         { icon: "bell", c: T.ac, l: "Notifications", a: () => setModal({ t: "notifs" }) },
         { icon: "phone", c: T.oc, l: "Device Wellness", a: () => setModal({ t: "device" }) },
         { icon: "star", c: T.acS, l: "Upgrade Plan", a: () => setModal({ t: "pay" }) },
-        { icon: "back", c: T.txL, l: "Retake Intake", a: () => setScreen("intake") },
+        { icon: "back", c: T.txL, l: "Retake Intake", a: () => setScreen("retake") },
       ].map((it, i) => (
         <div key={i} onClick={it.a} style={{ display: "flex", alignItems: "center", gap: 14, padding: "14px 16px", background: T.bgC, borderRadius: 14, marginBottom: 8, boxShadow: T.sh, cursor: "pointer" }}>
           <div style={{ width: 40, height: 40, borderRadius: 12, background: it.c + "15", display: "flex", alignItems: "center", justifyContent: "center" }}>
@@ -365,6 +365,7 @@ export default function App() {
 
   // Show intake flow
   if (screen === "intake") return <IntakeFlow />;
+  if (screen === "retake") return <IntakeFlow skipWelcome />;
 
   const startExercise = (ex) => {
     setRunningExercise(ex);
