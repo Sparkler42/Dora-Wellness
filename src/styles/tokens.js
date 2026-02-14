@@ -1,0 +1,23 @@
+// Design tokens from Dora Wellness design system
+export const T = {
+  bg: "#F7F3EE",
+  bgW: "#EDE7DF",
+  bgD: "#2C2825",
+  bgC: "#FFFFFF",
+  ac: "#B8860B",
+  acS: "#D4A843",
+  acG: "rgba(184,134,11,0.12)",
+  sg: "#8B9A7B",
+  sgS: "#A8B89A",
+  sgG: "rgba(139,154,123,0.15)",
+  cl: "#C4957A",
+  oc: "#6B8A9E",
+  ocG: "rgba(107,138,158,0.15)",
+  pl: "#8B6E8A",
+  tx: "#2C2825",
+  txM: "#5C564F",
+  txL: "#8A8279",
+  txD: "#F0ECE6",
+  sh: "0 2px 20px rgba(44,40,37,0.06)",
+  shE: "0 8px 32px rgba(44,40,37,0.10)",
+};
