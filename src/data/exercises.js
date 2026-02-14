@@ -150,15 +150,15 @@ export const EX = {
     ],
   },
   imagine: {
-    id: "imagine", cat: "play", title: "Imagination Lab", sub: "Creative visualization", dur: 900, color: T.pl, icon: "sparkle",
-    desc: "Imagination as consciousness technology. Systematic practice reveals information about possible futures and creative potential.",
+    id: "imagine", cat: "play", title: "Imagination Lab", sub: "Everyday experiments", dur: 900, color: T.pl, icon: "sparkle",
+    desc: "Simple imagination experiments using things already around you. No special equipment \u2014 just a pen, paper, a cup, and your willingness to see differently.",
     steps: [
-      { n: "Blank Canvas", d: 120, t: "Close eyes. Imagine blank white space in all directions. You\u2019re standing in infinite possibility. Feel the openness. Let space vibrate with potential. Don\u2019t rush to fill it \u2014 enjoy the emptiness." },
-      { n: "Color Breathing", d: 120, t: "Breathe in and imagine air is a color \u2014 whatever feels right. Feel it fill lungs and spread through body. Each exhale, different color. Let colors mix. Imagination activating your nervous system." },
-      { n: "Shape Shifting", d: 120, t: "Imagine you could be any animal. Don\u2019t choose with mind \u2014 let one appear. How does it move? Breathe? See the world? Move like this animal. What is it showing you about how you want to move through life?" },
-      { n: "Future Self", d: 180, t: "In white space, a figure approaches. You, five years from now \u2014 fully committed to wellbeing. How do they look? How do they carry themselves? What do they tell you? Listen with your whole body. This is possibility becoming conscious." },
-      { n: "Creative Download", d: 120, t: "Ask a question you\u2019ve been holding \u2014 about health, work, relationships. Don\u2019t think the answer. Let it arrive as image, sensation, word, feeling. Your imagination accesses wisdom your analytical mind doesn\u2019t." },
-      { n: "Return", d: 120, t: "Let imagined space dissolve. Feel the room. Open eyes. If something meaningful arose, capture it now \u2014 write or speak it. Imagination insights fade quickly unless captured." },
+      { n: "Free Doodle", d: 150, t: "Grab a pen and any scrap of paper. Set the pen on the page and let it move with no goal. No image in mind \u2014 just motion. Loops, scratches, pressure, release. When you stop, look at what appeared. Your hand knows things your thinking mind doesn\u2019t." },
+      { n: "Animate the Still", d: 150, t: "Look at any image near you \u2014 a photo on the wall, a book cover, a pattern on a mug. Study it for thirty seconds. Now close your eyes and replay it in your mind \u2014 but let it move. Figures walk, colors shift, shapes breathe. What story does the still image want to tell when freed?" },
+      { n: "Object Origin Story", d: 120, t: "Pick up the nearest small object \u2014 a pen, a spoon, your keys. Hold it and invent its secret history. Where was it made? Who touched it before you? Give it a name, a personality, a small adventure. Imagination turns the ordinary into the extraordinary." },
+      { n: "Sound Painting", d: 120, t: "Close your eyes and listen to whatever sounds surround you. Now imagine each sound as a color or shape appearing in darkness. A hum might be a slow blue wave. A click, a bright orange dot. Let your ears paint a picture you\u2019ve never seen before." },
+      { n: "Room Remix", d: 120, t: "Look around the room you\u2019re in. Now close your eyes and reimagine it \u2014 change the walls to glass, fill it with water, shrink it to the size of a shoebox, or expand it into a forest. Walk through your remixed space. What did you change first? That reveals what your imagination is hungry for." },
+      { n: "Letter to an Object", d: 120, t: "Look at your cup, your shoe, or the chair you\u2019re sitting on. In your mind, write it a one-sentence thank-you letter. \u2018Dear mug, thanks for being warm every morning.\u2019 Silly? Yes. But gratitude plus imagination rewires how you see the ordinary world around you." },
     ],
   },
   pleasure: {
