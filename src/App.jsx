@@ -16,7 +16,7 @@ import { useApp } from "./context/AppContext";
 import { EX } from "./data/exercises";
 import { intentions } from "./data/intentions";
 import { tiers } from "./data/tiers";
-import { getRecommendations } from "./hooks/useRecommendations";
+import { getRecommendations, isLocked } from "./hooks/useRecommendations";
 
 // ═══ HOME TAB ═════════════════════════════════════════════════
 function HomeTab() {
@@ -126,7 +126,7 @@ function BodyTab() {
 
 // ═══ MIND TAB ═════════════════════════════════════════════════
 function MindTab() {
-  const { setModal } = useApp();
+  const { tier, setModal } = useApp();
   return (
     <div style={{ paddingBottom: 20 }}>
       <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 26, color: T.tx, margin: "0 0 4px" }}>Mind & Awareness</h2>
@@ -141,7 +141,7 @@ function MindTab() {
           <p style={{ color: "rgba(240,236,230,0.65)", fontSize: 14, lineHeight: 1.6, margin: "0 0 16px" }}>
             David's signature interoceptive training. Develop refined awareness that transforms your relationship with your body.
           </p>
-          <button onClick={() => setModal({ t: "detail", d: EX.attention })} style={{ background: T.ac, border: "none", borderRadius: 12, padding: "10px 20px", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans'" }}>
+          <button onClick={() => isLocked(EX.attention, tier) ? setModal({ t: "pay" }) : setModal({ t: "detail", d: EX.attention })} style={{ background: T.ac, border: "none", borderRadius: 12, padding: "10px 20px", color: "#fff", fontSize: 14, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans'" }}>
             Begin
           </button>
         </div>
