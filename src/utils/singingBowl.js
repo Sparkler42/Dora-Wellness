@@ -60,7 +60,7 @@ export function playSingingBowl(type = "step") {
   try {
     const ctx = getContext();
     const isComplete = type === "complete";
-    const volume = isComplete ? 0.8 : 0.6;
+    const volume = 1.0;
     const maxDuration = 3.0;
 
     console.log("[SingingBowl] playSingingBowl called, type:", type, "ctx.state:", ctx.state, "bufferLoaded:", !!bellBuffer);
