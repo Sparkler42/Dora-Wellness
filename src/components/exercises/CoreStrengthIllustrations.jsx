@@ -3,6 +3,7 @@ import { T } from "../../styles/tokens";
 const C = T.oc;
 const SKIN = "#E8D5C4";
 const HAIR = "#6B5B4F";
+const GLOW = "rgba(212, 168, 67, 0.25)";
 
 // Shared stick-figure body part helpers
 const head = (cx, cy, r = 8) => <circle cx={cx} cy={cy} r={r} fill={SKIN} />;
@@ -45,31 +46,102 @@ function PelvicFloor() {
 
 // ═══ 2. DEAD BUG ══════════════════════════════════════════════
 function DeadBug() {
+  const DUR = "4s";
   return (
     <svg viewBox="0 0 200 160" fill="none">
       {mat()}
-      {/* Supine figure */}
-      {head(55, 130)}
-      {body({ x1: 63, y1: 130, x2: 110, y2: 130 })}
-      {/* Right arm extended overhead */}
-      <line x1="80" y1="130" x2="50" y2="105" stroke={C} strokeWidth="3" strokeLinecap="round">
-        <animate attributeName="x2" values="50;48;50" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="y2" values="105;95;105" dur="3s" repeatCount="indefinite" />
-      </line>
-      {/* Left arm up */}
-      {limb({ x1: 90, y1: 130, x2: 90, y2: 108 })}
-      {/* Right leg tabletop */}
-      {limb({ x1: 110, y1: 130, x2: 125, y2: 110 })}
-      {limb({ x1: 125, y1: 110, x2: 140, y2: 110 })}
-      {/* Left leg extended */}
-      <line x1="110" y1="130" x2="155" y2="112" stroke={C} strokeWidth="3" strokeLinecap="round">
-        <animate attributeName="x2" values="155;160;155" dur="3s" repeatCount="indefinite" />
-        <animate attributeName="y2" values="112;108;112" dur="3s" repeatCount="indefinite" />
-      </line>
-      {/* Core engagement */}
-      <ellipse cx="100" cy="128" rx="12" ry="4" fill={C} opacity="0.12">
-        <animate attributeName="opacity" values="0.12;0.25;0.12" dur="3s" repeatCount="indefinite" />
+
+      {/* ── Core engagement glow (behind figure) ── */}
+      <ellipse cx="92" cy="128" rx="22" ry="12" fill={GLOW} opacity="0.15">
+        <animate attributeName="opacity" values="0.15;0.35;0.15" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="ry" values="12;16;12" dur={DUR} repeatCount="indefinite" />
       </ellipse>
+
+      {/* ── Torso: Pelvis ── */}
+      <rect x="95" y="124" width="22" height="12" rx="5" fill={SKIN} stroke={C} strokeWidth="1.5" />
+
+      {/* ── Torso: Waist connector ── */}
+      <rect x="84" y="122" width="14" height="5" rx="3" fill={SKIN} stroke={C} strokeWidth="1">
+        <animate attributeName="width" values="14;12;14" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="x" values="84;85;84" dur={DUR} repeatCount="indefinite" />
+      </rect>
+
+      {/* ── Torso: Ribcage with breathing ── */}
+      <rect x="68" y="115" width="28" height="14" rx="6" fill={SKIN} stroke={C} strokeWidth="1.5">
+        <animate attributeName="height" values="14;16;14" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y" values="115;114;115" dur={DUR} repeatCount="indefinite" />
+      </rect>
+
+      {/* ── Head ── */}
+      <circle cx="55" cy="120" r="9" fill={SKIN} stroke={C} strokeWidth="1.5" />
+
+      {/* ── Left arm (static, tabletop — pointing up) ── */}
+      {/* Upper arm: shoulder → elbow */}
+      <line x1="72" y1="120" x2="72" y2="102" stroke={C} strokeWidth="5" strokeLinecap="round" />
+      {/* Forearm: elbow → hand */}
+      <line x1="72" y1="102" x2="72" y2="85" stroke={C} strokeWidth="4" strokeLinecap="round" />
+      {/* Elbow joint */}
+      <circle cx="72" cy="102" r="3" fill={C} opacity="0.5" />
+      {/* Shoulder joint */}
+      <circle cx="72" cy="120" r="3" fill={C} opacity="0.5" />
+
+      {/* ── Right arm (animated — extends overhead then returns) ── */}
+      {/* Upper arm: shoulder → elbow */}
+      <line x1="88" y1="120" x2="88" y2="102" stroke={C} strokeWidth="5" strokeLinecap="round">
+        <animate attributeName="x2" values="88;62;88" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y2" values="102;118;102" dur={DUR} repeatCount="indefinite" />
+      </line>
+      {/* Forearm: elbow → hand */}
+      <line x1="88" y1="102" x2="88" y2="85" stroke={C} strokeWidth="4" strokeLinecap="round">
+        <animate attributeName="x1" values="88;62;88" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y1" values="102;118;102" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="x2" values="88;38;88" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y2" values="85;118;85" dur={DUR} repeatCount="indefinite" />
+      </line>
+      {/* Animated elbow joint */}
+      <circle cx="88" cy="102" r="3" fill={C} opacity="0.5">
+        <animate attributeName="cx" values="88;62;88" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="cy" values="102;118;102" dur={DUR} repeatCount="indefinite" />
+      </circle>
+      {/* Shoulder joint */}
+      <circle cx="88" cy="120" r="3" fill={C} opacity="0.5" />
+
+      {/* ── Right leg (static, tabletop — knee bent 90°) ── */}
+      {/* Thigh: hip → knee */}
+      <line x1="112" y1="132" x2="130" y2="112" stroke={C} strokeWidth="6" strokeLinecap="round" />
+      {/* Shin: knee → foot */}
+      <line x1="130" y1="112" x2="150" y2="112" stroke={C} strokeWidth="5" strokeLinecap="round" />
+      {/* Knee joint */}
+      <circle cx="130" cy="112" r="3" fill={C} opacity="0.5" />
+      {/* Hip joint */}
+      <circle cx="112" cy="132" r="3" fill={C} opacity="0.5" />
+
+      {/* ── Left leg (animated — extends straight then returns) ── */}
+      {/* Thigh: hip → knee */}
+      <line x1="100" y1="132" x2="100" y2="112" stroke={C} strokeWidth="6" strokeLinecap="round">
+        <animate attributeName="x2" values="100;132;100" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y2" values="112;136;112" dur={DUR} repeatCount="indefinite" />
+      </line>
+      {/* Shin: knee → foot */}
+      <line x1="100" y1="112" x2="115" y2="112" stroke={C} strokeWidth="5" strokeLinecap="round">
+        <animate attributeName="x1" values="100;132;100" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y1" values="112;136;112" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="x2" values="115;168;115" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="y2" values="112;136;112" dur={DUR} repeatCount="indefinite" />
+      </line>
+      {/* Animated knee joint */}
+      <circle cx="100" cy="112" r="3" fill={C} opacity="0.5">
+        <animate attributeName="cx" values="100;132;100" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="cy" values="112;136;112" dur={DUR} repeatCount="indefinite" />
+      </circle>
+      {/* Hip joint */}
+      <circle cx="100" cy="132" r="3" fill={C} opacity="0.5" />
+
+      {/* ── Breathing indicator on ribcage ── */}
+      <circle cx="82" cy="122" r="2" fill={C} opacity="0.1">
+        <animate attributeName="r" values="2;4;2" dur={DUR} repeatCount="indefinite" />
+        <animate attributeName="opacity" values="0.1;0.25;0.1" dur={DUR} repeatCount="indefinite" />
+      </circle>
     </svg>
   );
 }
