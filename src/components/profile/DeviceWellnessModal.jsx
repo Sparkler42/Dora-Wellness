@@ -216,7 +216,10 @@ export default function DeviceWellnessModal({ onClose }) {
     <Modal onClose={onClose}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
         <Icon n="phone" s={22} c={T.oc} />
-        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: 0 }}>Device Wellness</h2>
+        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: 0, flex: 1 }}>Device Wellness</h2>
+        <button onClick={onClose} style={{ background: T.bgW, border: "none", borderRadius: 10, width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+          <Icon n="close" s={18} c={T.txM} />
+        </button>
       </div>
       <p style={{ color: T.txL, fontSize: 14, margin: "0 0 6px", lineHeight: 1.5 }}>
         When you notice the urge for your phone, pause and feel the underlying state. Ask: <em>&ldquo;What does my body-mind actually need?&rdquo;</em>

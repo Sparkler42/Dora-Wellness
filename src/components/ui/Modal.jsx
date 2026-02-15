@@ -28,6 +28,7 @@ export default function Modal({ children, dark, onClose }) {
         }}
       >
         <div
+          onClick={onClose}
           style={{
             width: 40,
             height: 4,
@@ -35,6 +36,9 @@ export default function Modal({ children, dark, onClose }) {
             borderRadius: 2,
             margin: "0 auto 20px",
             opacity: 0.4,
+            cursor: "pointer",
+            padding: "10px 0",
+            backgroundClip: "content-box",
           }}
         />
         {children}
