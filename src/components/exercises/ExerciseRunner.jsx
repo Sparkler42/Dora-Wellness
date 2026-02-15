@@ -4,6 +4,7 @@ import { T } from "../../styles/tokens";
 import { useApp } from "../../context/AppContext";
 import { fmt } from "../../utils/formatTime";
 import CoreStrengthIllustration from "./CoreStrengthIllustrations";
+import { playSingingBowl } from "../../utils/singingBowl";
 
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
@@ -11,6 +12,7 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [paused, setPaused] = useState(false);
   const [done, setDone] = useState(false);
   const timer = useRef(null);
+  const bellSignal = useRef(null); // "step" | "complete" | null
 
   useEffect(() => {
     if (!paused && !done) {
@@ -19,9 +21,11 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
           const sd = exercise.steps[step].d;
           if (t + 1 >= sd) {
             if (step + 1 < exercise.steps.length) {
+              bellSignal.current = "step";
               setStep((s) => s + 1);
               return 0;
             } else {
+              bellSignal.current = "complete";
               setDone(true);
               clearInterval(timer.current);
               return sd;
@@ -33,6 +37,14 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
     }
     return () => clearInterval(timer.current);
   }, [exercise, step, paused, done]);
+
+  // Play singing bowl when a step or the exercise completes
+  useEffect(() => {
+    if (bellSignal.current) {
+      playSingingBowl(bellSignal.current);
+      bellSignal.current = null;
+    }
+  }, [step, done]);
 
   const st = exercise.steps[step];
   const sp = time / st.d;
