@@ -8,8 +8,22 @@ let audioCtx = null;
 function getContext() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    console.log("[SingingBowl] AudioContext created, state:", audioCtx.state);
   }
   return audioCtx;
+}
+
+/**
+ * Unlock the AudioContext — must be called from a user-gesture handler
+ * (click/tap) so browsers allow audio playback.
+ */
+export async function unlockAudio() {
+  const ctx = getContext();
+  if (ctx.state === "suspended") {
+    console.log("[SingingBowl] AudioContext suspended, resuming…");
+    await ctx.resume();
+    console.log("[SingingBowl] AudioContext resumed, state:", ctx.state);
+  }
 }
 
 /**
@@ -20,6 +34,13 @@ function getContext() {
 export function playSingingBowl(type = "step") {
   try {
     const ctx = getContext();
+    console.log("[SingingBowl] playSingingBowl called, type:", type, "ctx.state:", ctx.state);
+
+    // Resume if suspended (best-effort; may not work without prior user gesture)
+    if (ctx.state === "suspended") {
+      ctx.resume();
+    }
+
     const now = ctx.currentTime;
 
     const isComplete = type === "complete";
@@ -94,7 +115,7 @@ export function playSingingBowl(type = "step") {
 
     noiseSrc.start(now);
     noiseSrc.stop(now + 0.1);
-  } catch {
-    // Silently fail if Web Audio API is unavailable
+  } catch (err) {
+    console.warn("[SingingBowl] playback failed:", err);
   }
 }

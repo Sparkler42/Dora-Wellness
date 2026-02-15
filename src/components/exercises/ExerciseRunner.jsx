@@ -4,7 +4,7 @@ import { T } from "../../styles/tokens";
 import { useApp } from "../../context/AppContext";
 import { fmt } from "../../utils/formatTime";
 import CoreStrengthIllustration from "./CoreStrengthIllustrations";
-import { playSingingBowl } from "../../utils/singingBowl";
+import { playSingingBowl, unlockAudio } from "../../utils/singingBowl";
 
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
@@ -13,6 +13,16 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [done, setDone] = useState(false);
   const timer = useRef(null);
   const bellSignal = useRef(null); // "step" | "complete" | null
+  const audioUnlocked = useRef(false);
+
+  // Unlock AudioContext on first user interaction within the exercise runner
+  const handleUserInteraction = () => {
+    if (!audioUnlocked.current) {
+      console.log("[ExerciseRunner] Unlocking audio on user interaction");
+      unlockAudio();
+      audioUnlocked.current = true;
+    }
+  };
 
   useEffect(() => {
     if (!paused && !done) {
@@ -41,6 +51,7 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   // Play singing bowl when a step or the exercise completes
   useEffect(() => {
     if (bellSignal.current) {
+      console.log("[ExerciseRunner] Bell signal triggered:", bellSignal.current, "step:", step, "done:", done);
       playSingingBowl(bellSignal.current);
       bellSignal.current = null;
     }
@@ -75,7 +86,7 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   }
 
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 200, background: T.bg, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+    <div onClick={handleUserInteraction} style={{ position: "fixed", inset: 0, zIndex: 200, background: T.bg, display: "flex", flexDirection: "column", overflow: "hidden" }}>
       {/* Header */}
       <div style={{ padding: "16px 20px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
         <button onClick={onClose} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
