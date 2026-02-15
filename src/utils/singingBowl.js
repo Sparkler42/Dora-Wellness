@@ -44,28 +44,28 @@ export function playSingingBowl(type = "step") {
     const now = ctx.currentTime;
 
     const isComplete = type === "complete";
-    const volume = isComplete ? 0.18 : 0.14;
-    const duration = isComplete ? 4.0 : 2.5;
+    const volume = isComplete ? 0.55 : 0.45;
+    const duration = 2.5;
 
-    // Master gain
+    // Master gain — loud enough to be audible on low-volume systems
     const master = ctx.createGain();
     master.gain.setValueAtTime(volume, now);
     master.gain.exponentialRampToValueAtTime(0.001, now + duration);
     master.connect(ctx.destination);
 
-    // Singing bowls produce a fundamental + several inharmonic partials
+    // Deep, resonant singing bowl partials
     const partials = isComplete
       ? [
-          { freq: 220, gain: 1.0 },
-          { freq: 440, gain: 0.5 },
-          { freq: 660, gain: 0.25 },
-          { freq: 880, gain: 0.12 },
-          { freq: 1320, gain: 0.06 },
+          { freq: 130.81, gain: 1.0 },   // C3 — deep fundamental
+          { freq: 261.63, gain: 0.6 },   // C4
+          { freq: 392.00, gain: 0.3 },   // G4
+          { freq: 523.25, gain: 0.15 },  // C5
+          { freq: 783.99, gain: 0.07 },  // G5
         ]
       : [
-          { freq: 293.66, gain: 1.0 },   // D4
-          { freq: 587.33, gain: 0.4 },   // D5
-          { freq: 880, gain: 0.15 },     // A5
+          { freq: 174.61, gain: 1.0 },   // F3 — deep fundamental
+          { freq: 349.23, gain: 0.5 },   // F4
+          { freq: 523.25, gain: 0.2 },   // C5
         ];
 
     partials.forEach(({ freq, gain: g }) => {
@@ -102,12 +102,12 @@ export function playSingingBowl(type = "step") {
 
     const noiseFilter = ctx.createBiquadFilter();
     noiseFilter.type = "bandpass";
-    noiseFilter.frequency.value = isComplete ? 300 : 400;
+    noiseFilter.frequency.value = isComplete ? 200 : 250;
     noiseFilter.Q.value = 2;
 
     const noiseGain = ctx.createGain();
-    noiseGain.gain.setValueAtTime(volume * 0.5, now);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+    noiseGain.gain.setValueAtTime(volume * 0.6, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + 0.12);
 
     noiseSrc.connect(noiseFilter);
     noiseFilter.connect(noiseGain);
