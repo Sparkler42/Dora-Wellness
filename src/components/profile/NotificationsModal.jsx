@@ -11,7 +11,10 @@ export default function NotificationsModal({ onClose }) {
     <Modal onClose={onClose}>
       <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 6 }}>
         <Icon n="bell" s={22} c={T.ac} />
-        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: 0 }}>Notification Style</h2>
+        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: 0, flex: 1 }}>Notification Style</h2>
+        <button onClick={onClose} style={{ background: T.bgW, border: "none", borderRadius: 10, width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", flexShrink: 0 }}>
+          <Icon n="close" s={18} c={T.txM} />
+        </button>
       </div>
       <p style={{ color: T.txL, fontSize: 14, margin: "0 0 24px", lineHeight: 1.5 }}>
         We believe in invitations, not interruptions.
