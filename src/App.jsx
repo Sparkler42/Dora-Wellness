@@ -229,7 +229,7 @@ function ChatTab() {
     setLoading(true);
     try {
       const p = profile || {};
-      const sys = `You are the Dora Wellness AI guide, by David Moll and Caroline Dunham. You support users in movement, attention, and wellbeing practice.
+      const sys = `You are the Spark AI guide, by David Moll and Caroline Dunham. You support users in movement, attention, and wellbeing practice.
 PHILOSOPHY: "Putting attention on expanding what feels good is the starting place toward healing." Active stretching integrates interested attention with physical engagement. Distinguish nerve sensation (electric, zingy) from muscle/fascia stretch (broad, warm). Self-care is responsive, not formulaic. Attention is the master skill. Movement should be playful and curious.
 You have the user's profile and metrics. Give personalized recommendations. Be warm, embodied, direct. 2-4 paragraphs max. Reference David and Caroline's teachings naturally. Suggest specific exercises when relevant.
 Available exercises: yoga, stretch, strength, barefoot, somatic, nutrition, meditation, attention, sensory, memory, selfaware, imagine, pleasure, playful, creative, sensual.
@@ -258,7 +258,7 @@ METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneTod
         {msgs.length === 0 && (
           <div style={{ background: T.ocG, borderRadius: 16, padding: 18, marginTop: 10 }}>
             <p style={{ color: T.txM, fontSize: 14, lineHeight: 1.6, margin: 0 }}>
-              Hi{profile?.name ? ` ${profile.name}` : ""}, I'm your Dora Wellness guide. I can see your practice history and goals. Ask me about exercises, your progress, body questions, or what to practice next. I'm here to support your journey.
+              Hi{profile?.name ? ` ${profile.name}` : ""}, I'm your Spark guide. I can see your practice history and goals. Ask me about exercises, your progress, body questions, or what to practice next. I'm here to support your journey.
             </p>
           </div>
         )}
@@ -349,7 +349,7 @@ function ProfileTab() {
       <div style={{ background: T.bgD, borderRadius: 20, padding: "22px 20px", marginTop: 20, position: "relative", overflow: "hidden" }}>
         <Orb color={T.ac} sz="80px" top="-20px" left="-10px" d={2} />
         <div style={{ position: "relative", zIndex: 1 }}>
-          <h3 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 18, color: T.txD, margin: "0 0 10px" }}>About Dora Wellness</h3>
+          <h3 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 18, color: T.txD, margin: "0 0 10px" }}>About Spark</h3>
           <p style={{ color: "rgba(240,236,230,0.7)", fontSize: 14, lineHeight: 1.6, margin: "0 0 10px" }}>
             Founded by David Moll and Caroline Dunham in Ukiah, California. Over three decades of combined experience in bodywork, yoga, and functional movement.
           </p>
@@ -418,7 +418,7 @@ export default function App() {
       {/* Header */}
       <div style={{ padding: "12px 22px 0", display: "flex", justifyContent: "space-between", alignItems: "center", position: "sticky", top: 0, zIndex: 50, background: T.bg }}>
         <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, letterSpacing: "-0.3px" }}>
-          <span style={{ color: T.ac }}>dora</span> wellness
+          <span style={{ color: T.ac }}>spark</span>
         </h1>
         <button onClick={() => setModal({ t: "notifs" })} style={{ background: "none", border: "none", cursor: "pointer", padding: 4 }}>
           <Icon n="bell" s={20} c={T.txM} />

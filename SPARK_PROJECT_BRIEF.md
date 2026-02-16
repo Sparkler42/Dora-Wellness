@@ -1,6 +1,6 @@
-# DORA WELLNESS APP — Claude Code Project Brief
+# SPARK APP — Claude Code Project Brief
 ## Project Overview
-Dora Wellness is a comprehensive wellness application created by David Moll and Caroline Dunham, based in Ukiah, California (590 S. Dora Street, 95482). The business operates under the LLC "Attention Alchemists" with a consumer-facing brand called "Dora Wellness" (also known as "Dora Yoga" for class-specific contexts).
+Spark is a comprehensive wellness application created by David Moll and Caroline Dunham, based in Ukiah, California (590 S. Dora Street, 95482). The business operates under the LLC "Attention Alchemists" with a consumer-facing brand called "Spark" (also known as "Dora Yoga" for class-specific contexts).
 David and Caroline are partners in both life and business. Together they bring over three decades of combined experience in bodywork, yoga, somatic awareness, functional movement, and consciousness exploration. This app is the digital extension of their in-person teaching practice.
 A React prototype has already been built and is included as `dora-wellness-app.jsx`. It contains all core features in a single file and needs to be refactored into a proper project structure.
 ---
@@ -112,7 +112,7 @@ Full-screen guided experience with:
 ### 4. AI Wellness Agent (Paywalled — Embody Deep tier)
 Conversational AI powered by the Anthropic API (claude-sonnet-4-20250514). Lives in a "Guide" tab.
 **System prompt includes:**
-- Complete Dora Wellness philosophy (all quotes and principles above)
+- Complete Spark philosophy (all quotes and principles above)
 - User's full intake profile (name, age, experience, goals, focus areas, mind interests, time, preferences)
 - Practice metrics (current tier, streak, sessions completed today, total sessions, recent exercise history)
 - Device wellness data (screen time, pickups, patterns)
@@ -125,7 +125,7 @@ Conversational AI powered by the Anthropic API (claude-sonnet-4-20250514). Lives
 - 2-4 paragraphs max per response
 - If someone needs professional help, gently suggests consultation
 **Paywall:** Users on Free or Flow tier see a locked screen with description and upgrade prompt. Deep and Private tiers get full access.
-**Welcome message:** "Hi [name], I'm your Dora Wellness guide. I can see your practice history and goals. Ask me about exercises, your progress, body questions, or what to practice next."
+**Welcome message:** "Hi [name], I'm your Spark guide. I can see your practice history and goals. Ask me about exercises, your progress, body questions, or what to practice next."
 ### 5. Paywall / Tier Structure
 **Embody Free** (Free) — Color: sage green
 - Daily intention & body scan meditation
@@ -187,7 +187,7 @@ Saving an entry counts toward streak and logs to practice history.
 - User avatar (initial-based), name, streak, tier display
 - Stats: streak days, sessions today, total sessions
 - Quick links: Notification preferences, Device wellness, Upgrade plan, Retake intake
-- About section with Dora Wellness description and "You are already doing it right" quote
+- About section with Spark description and "You are already doing it right" quote
 ### 10. Personalized "For You" Recommendations
 Algorithm based on intake data:
 - Pain/tension goals → Somatic Release
@@ -206,7 +206,7 @@ Algorithm based on intake data:
 Rotating quotes from David and Caroline displayed on the home hero:
 1. "Your body speaks to you constantly. Today, listen." — David
 2. "Small shifts in awareness create profound changes." — Caroline
-3. "Movement is life. Move for your life." — Dora Wellness
+3. "Movement is life. Move for your life." — Spark
 4. "The space between where you are and where you want to be is within reach." — David
 5. "Every moment is an opportunity to practice." — Caroline & David
 6. "Follow the trail of inquiry with interest in the process." — David
@@ -361,7 +361,7 @@ This file is the starting point. Refactor it into the component structure above.
 ## Business Context
 - Location: 590 S. Dora Street, Ukiah, CA 95482
 - LLC: Attention Alchemists
-- Consumer brand: Dora Wellness / Dora Yoga
+- Consumer brand: Spark / Dora Yoga
 - Website: embodyyournow.com (existing)
 - Current class locations: Ukiah studio, previously at Atma Yoga in Orinda and Forma Gym
 - Classes: Gentle Hatha, Core Strength & Stability, Barefoot Playground, Candlelight Yoga, Hatha Flow, Active Stretching workshops

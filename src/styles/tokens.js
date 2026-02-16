@@ -1,4 +1,4 @@
-// Design tokens from Dora Wellness design system
+// Design tokens from Spark design system
 export const T = {
   bg: "#F7F3EE",
   bgW: "#EDE7DF",

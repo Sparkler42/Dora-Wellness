@@ -55,7 +55,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
     <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, minHeight: "100vh", maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
       <div style={{ padding: "20px 22px 0" }}>
         <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 20px" }}>
-          <span style={{ color: T.ac }}>dora</span> wellness
+          <span style={{ color: T.ac }}>spark</span>
         </h1>
         <div style={{ height: 4, background: T.bgW, borderRadius: 2, marginBottom: 32 }}>
           <div style={{ height: 4, background: T.ac, borderRadius: 2, width: `${((step + 1) / intakeQuestions.length) * 100}%`, transition: "width 0.4s ease" }} />

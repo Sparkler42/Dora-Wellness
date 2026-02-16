@@ -3,7 +3,7 @@ import { notifCategories } from "../data/notifications";
 
 const AppContext = createContext(null);
 
-const STORAGE_KEY = "dora_wellness";
+const STORAGE_KEY = "spark";
 
 function loadSaved() {
   try {

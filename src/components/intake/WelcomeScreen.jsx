@@ -67,8 +67,8 @@ export default function WelcomeScreen({ onStart }) {
           </div>
         </div>
 
-        {/* "dora" */}
-        <div style={{ overflow: "hidden", marginBottom: 2 }}>
+        {/* "spark" */}
+        <div style={{ overflow: "hidden", marginBottom: 40 }}>
           <h1
             style={{
               fontFamily: "'DM Serif Display',serif",
@@ -82,28 +82,8 @@ export default function WelcomeScreen({ onStart }) {
               transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            dora
+            spark
           </h1>
-        </div>
-
-        {/* "wellness" */}
-        <div style={{ overflow: "hidden", marginBottom: 40 }}>
-          <p
-            style={{
-              fontFamily: "'DM Sans',sans-serif",
-              fontSize: 16,
-              color: "rgba(240,236,230,0.5)",
-              margin: 0,
-              letterSpacing: "8px",
-              textTransform: "uppercase",
-              fontWeight: 300,
-              opacity: phase >= 1 ? 1 : 0,
-              transform: phase >= 1 ? "translateY(0)" : "translateY(100%)",
-              transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s",
-            }}
-          >
-            wellness
-          </p>
         </div>
 
         {/* Divider line */}
