@@ -6,6 +6,7 @@ import { fmt } from "../../utils/formatTime";
 import CoreStrengthIllustration from "./CoreStrengthIllustrations";
 import { playSingingBowl, unlockAudio } from "../../utils/singingBowl";
 import StepAudioPlayer from "./StepAudioPlayer";
+import ExerciseAudioPlayer from "./ExerciseAudioPlayer";
 
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
@@ -15,6 +16,7 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const timer = useRef(null);
   const bellSignal = useRef(null); // "step" | "complete" | null
   const audioUnlocked = useRef(false);
+  const exerciseAudioRef = useRef(null);
 
   // Unlock AudioContext on first user interaction within the exercise runner
   const handleUserInteraction = () => {
@@ -101,6 +103,13 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
       <div style={{ height: 3, background: T.bgW, margin: "0 20px" }}>
         <div style={{ height: 3, background: exercise.color, borderRadius: 2, width: `${overallProgress * 100}%`, transition: "width 0.3s" }} />
       </div>
+
+      {/* Exercise-level instructor audio */}
+      {exercise.audio && (
+        <div style={{ marginTop: 10 }}>
+          <ExerciseAudioPlayer ref={exerciseAudioRef} src={exercise.audio} color={exercise.color} paused={paused} done={done} />
+        </div>
+      )}
 
       {/* Main content */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 28px", textAlign: "center" }}>

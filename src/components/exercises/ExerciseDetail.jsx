@@ -14,7 +14,10 @@ export default function ExerciseDetail({ ex, onStart }) {
       </div>
       <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 26, color: T.tx, margin: "0 0 4px" }}>{ex.title}</h2>
       <p style={{ color: T.txL, fontSize: 14, margin: "0 0 6px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{ex.sub}</p>
-      <p style={{ color: T.txM, fontSize: 14, margin: "0 0 18px" }}>{Math.round(ex.dur / 60)} minutes · {ex.steps.length} steps</p>
+      <p style={{ color: T.txM, fontSize: 14, margin: "0 0 18px" }}>
+        {Math.round(ex.dur / 60)} minutes · {ex.steps.length} steps
+        {ex.audio && <span style={{ marginLeft: 8, fontSize: 12, fontWeight: 600, color: ex.color }}>· Audio guided</span>}
+      </p>
       <p style={{ color: T.tx, fontSize: 15, lineHeight: 1.7, margin: "0 0 22px" }}>{ex.desc}</p>
       <div style={{ background: T.bgW, borderRadius: 14, padding: 16, marginBottom: 24 }}>
         <p style={{ color: T.txM, fontSize: 13, fontWeight: 600, margin: "0 0 10px" }}>What you'll explore:</p>
