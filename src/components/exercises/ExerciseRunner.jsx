@@ -5,6 +5,8 @@ import { useApp } from "../../context/AppContext";
 import { fmt } from "../../utils/formatTime";
 import CoreStrengthIllustration from "./CoreStrengthIllustrations";
 import { playSingingBowl, unlockAudio } from "../../utils/singingBowl";
+import StepAudioPlayer from "./StepAudioPlayer";
+import ExerciseAudioPlayer from "./ExerciseAudioPlayer";
 
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
@@ -14,6 +16,7 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const timer = useRef(null);
   const bellSignal = useRef(null); // "step" | "complete" | null
   const audioUnlocked = useRef(false);
+  const exerciseAudioRef = useRef(null);
 
   // Unlock AudioContext on first user interaction within the exercise runner
   const handleUserInteraction = () => {
@@ -101,6 +104,13 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
         <div style={{ height: 3, background: exercise.color, borderRadius: 2, width: `${overallProgress * 100}%`, transition: "width 0.3s" }} />
       </div>
 
+      {/* Exercise-level instructor audio */}
+      {exercise.audio && (
+        <div style={{ marginTop: 10 }}>
+          <ExerciseAudioPlayer ref={exerciseAudioRef} src={exercise.audio} color={exercise.color} paused={paused} done={done} />
+        </div>
+      )}
+
       {/* Main content */}
       <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "24px 28px", textAlign: "center" }}>
         {/* Timer ring */}
@@ -119,6 +129,8 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
         <h3 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 6px" }}>{st.n}</h3>
         <p style={{ color: T.txL, fontSize: 13, margin: "0 0 16px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{exercise.title}</p>
         <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, maxWidth: 380 }}>{st.t}</p>
+
+        {st.audio && <StepAudioPlayer src={st.audio} color={exercise.color} paused={paused} />}
       </div>
 
       {/* Controls */}
