@@ -1,5 +1,9 @@
 import { T } from "../styles/tokens";
 
+// Steps support an optional `audio` property: relative path under public/audio/
+// e.g.  { n: "Grounding Breath", d: 180, t: "...", audio: "yoga/grounding-breath.mp3" }
+// Place the file at  public/audio/yoga/grounding-breath.mp3
+
 export const EX = {
   yoga: {
     id: "yoga", cat: "body", title: "Gentle Hatha", sub: "Evening grounding flow", dur: 1800, color: T.sg, icon: "lotus",

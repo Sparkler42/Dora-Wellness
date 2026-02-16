@@ -5,6 +5,7 @@ import { useApp } from "../../context/AppContext";
 import { fmt } from "../../utils/formatTime";
 import CoreStrengthIllustration from "./CoreStrengthIllustrations";
 import { playSingingBowl, unlockAudio } from "../../utils/singingBowl";
+import StepAudioPlayer from "./StepAudioPlayer";
 
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
@@ -119,6 +120,8 @@ export default function ExerciseRunner({ exercise, onComplete, onClose }) {
         <h3 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 6px" }}>{st.n}</h3>
         <p style={{ color: T.txL, fontSize: 13, margin: "0 0 16px", letterSpacing: "0.5px", textTransform: "uppercase" }}>{exercise.title}</p>
         <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, maxWidth: 380 }}>{st.t}</p>
+
+        {st.audio && <StepAudioPlayer src={st.audio} color={exercise.color} paused={paused} />}
       </div>
 
       {/* Controls */}

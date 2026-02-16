@@ -24,6 +24,7 @@ export default function ExerciseDetail({ ex, onStart }) {
               {i + 1}
             </span>
             <span style={{ fontSize: 14, color: T.tx }}>{s.n}</span>
+            {s.audio && <span style={{ fontSize: 11, color: ex.color, fontWeight: 600, marginLeft: 6, flexShrink: 0 }}>AUDIO</span>}
             <span style={{ marginLeft: "auto", fontSize: 12, color: T.txL }}>{fmt(s.d)}</span>
           </div>
         ))}
