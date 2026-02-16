@@ -3,7 +3,7 @@ import { T } from "../styles/tokens";
 // Audio support — all paths are relative to public/audio/
 //
 // Exercise-level audio (single track for entire exercise):
-//   audio: "gentle-hatha.mp3"       →  public/audio/gentle-hatha.mp3
+//   audio: "gentle-hatha1.mp3"      →  public/audio/gentle-hatha1.mp3
 //
 // Step-level audio (per-step clips):
 //   steps: [{ n: "...", d: 180, t: "...", audio: "yoga/grounding-breath.mp3" }]
@@ -11,7 +11,7 @@ import { T } from "../styles/tokens";
 export const EX = {
   yoga: {
     id: "yoga", cat: "body", title: "Gentle Hatha", sub: "Evening grounding flow", dur: 1800, color: T.sg, icon: "lotus",
-    audio: "gentle-hatha.mp3",
+    audio: "gentle-hatha1.mp3",
     desc: "Release tension through gentle somatic movement and yoga postures. Mindful alignment cues guide you into your body's most natural motions.",
     steps: [
       { n: "Grounding Breath", d: 180, t: "Stand or sit comfortably. Close your eyes. Feel your weight settle into whatever supports you. Breathe naturally and notice where breath moves \u2014 ribs, belly, back. Don\u2019t change it, just observe." },
