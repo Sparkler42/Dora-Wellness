@@ -1,6 +1,6 @@
 /**
  * Bell chime sound for exercise timers.
- * Plays a pre-recorded bell WAV file from public/sounds/bell.wav,
+ * Plays a pre-recorded bell MP3 file from public/sounds/transitionbell.mp3,
  * capped at 3 seconds. Uses Web Audio API for precise control.
  */
 
@@ -25,7 +25,7 @@ async function loadBellBuffer() {
   try {
     const ctx = getContext();
     const base = import.meta.env.BASE_URL || "/";
-    const url = `${base}sounds/bell.wav`;
+    const url = `${base}sounds/transitionbell.mp3`;
     console.log("[SingingBowl] Loading bell sound from:", url);
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
