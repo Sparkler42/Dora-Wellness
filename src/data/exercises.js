@@ -15,7 +15,7 @@ export const EX = {
     desc: "Release tension through gentle somatic movement and yoga postures. Mindful alignment cues guide you into your body's most natural motions.",
     steps: [
       { n: "Grounding Breath", d: 180, t: "Stand or sit comfortably. Close your eyes. Feel your weight settle into whatever supports you. Breathe naturally and notice where breath moves \u2014 ribs, belly, back. Don\u2019t change it, just observe.", audio: "gentle-hatha-1.mp3" },
-      { n: "Cat-Cow Awareness", d: 180, t: "Hands and knees. Inhale: belly drops, chest opens. Exhale: round through your spine. Move slowly \u2014 notice where movement initiates. Is it your pelvis? Mid-back? Follow the wave through your entire spine." },
+      { n: "Cat-Cow Awareness", d: 180, t: "Hands and knees. Inhale: belly drops, chest opens. Exhale: round through your spine. Move slowly \u2014 notice where movement initiates. Is it your pelvis? Mid-back? Follow the wave through your entire spine.", audio: "gentle-hatha-2.mp3" },
       { n: "Downward Dog Exploration", d: 180, t: "Press into downward dog. Bend one knee, then the other. Feel the difference between calf stretch and arm engagement. Is the sensation nerve, fascia, or muscle? There\u2019s no wrong answer \u2014 just notice the quality." },
       { n: "Low Lunge \u2014 Right", d: 150, t: "Right foot forward, back knee down. Don\u2019t push \u2014 invite length. Feel your left hip flexor. Where does sensation begin and end? Breathe into the edges." },
       { n: "Low Lunge \u2014 Left", d: 150, t: "Switch sides. Left foot forward. Does this side feel different? More open? More restricted? Your body isn\u2019t symmetrical \u2014 honor the uniqueness of each side." },
