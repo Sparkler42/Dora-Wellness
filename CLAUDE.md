@@ -25,7 +25,7 @@
 - `npm run dev` — local dev server
 - `npm run build` — production build to dist/
 - `npm run preview` — preview production build
-- Vite config sets `base: '/Spark/'` for GitHub Pages subdirectory
+- Vite config sets `base: '/Dora-Wellness/'` for GitHub Pages subdirectory
 
 ## Current Focus
 Refining exercise illustrations and user experience. App is live and functional.
