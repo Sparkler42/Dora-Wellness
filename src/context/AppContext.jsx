@@ -15,6 +15,11 @@ function loadSaved() {
     if (data.savedDate !== today) {
       data.doneToday = [];
     }
+    // Reset step count if saved date isn't today
+    if (data.contextSensors && data.contextSensors.stepResetDate !== today) {
+      data.contextSensors.stepCount = 0;
+      data.contextSensors.stepResetDate = today;
+    }
     return data;
   } catch {
     return null;
@@ -47,6 +52,14 @@ export function AppProvider({ children }) {
   const [journal, setJournal] = useState(saved?.journal || []);
   const [medicalHistory, setMedicalHistory] = useState(saved?.medicalHistory || null);
   const [deviceUsage, setDeviceUsage] = useState(saved?.deviceUsage || { enabled: false, sessions: [], dailyGoal: 120 });
+  const [contextSensors, setContextSensors] = useState(saved?.contextSensors || {
+    motion: { enabled: false, permission: null },
+    gps: { enabled: false, permission: null },
+    homeLocation: null,
+    stepCount: 0,
+    stepResetDate: new Date().toISOString().slice(0, 10),
+  });
+  const [suggestionHistory, setSuggestionHistory] = useState(saved?.suggestionHistory || []);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -54,8 +67,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -78,6 +91,8 @@ export function AppProvider({ children }) {
     journal, setJournal,
     medicalHistory, setMedicalHistory,
     deviceUsage, setDeviceUsage,
+    contextSensors, setContextSensors,
+    suggestionHistory, setSuggestionHistory,
     mounted,
     completeExercise,
   };

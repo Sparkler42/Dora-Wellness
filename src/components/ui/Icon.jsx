@@ -98,6 +98,29 @@ export default function Icon({ n, s = 22, c = T.txM }) {
         <path d="M12 7v5l3 3" {...p} />
       </>
     ),
+    walk: (
+      <>
+        <circle cx="12" cy="4" r="2" fill={c} />
+        <path d="M9 8h6l-1.5 6-2.5 2v5M13.5 14l2.5 2v5M9 8l-3 6" {...p} />
+      </>
+    ),
+    run: (
+      <>
+        <circle cx="13" cy="4" r="2" fill={c} />
+        <path d="M10 8h5l-2 6-3 3-2 4M13 14l3 2 3 1M10 8l-4 4-3 1" {...p} />
+      </>
+    ),
+    location: <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5a2.5 2.5 0 110-5 2.5 2.5 0 010 5z" {...p} />,
+    steps: (
+      <>
+        <path d="M8 4c1.1 0 2 1.3 2 3s-.9 3-2 3-2-1.3-2-3 .9-3 2-3zM16 14c1.1 0 2 1.3 2 3s-.9 3-2 3-2-1.3-2-3 .9-3 2-3z" {...p} />
+        <ellipse cx="8" cy="7" rx="1.2" ry="2" fill={c} opacity=".3" />
+        <ellipse cx="16" cy="17" rx="1.2" ry="2" fill={c} opacity=".3" />
+      </>
+    ),
+    shield: (
+      <path d="M12 2l7 4v5c0 5.25-3.5 8.25-7 10-3.5-1.75-7-4.75-7-10V6z" {...p} />
+    ),
   };
 
   return (

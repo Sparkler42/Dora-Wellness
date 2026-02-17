@@ -12,6 +12,11 @@ import PaywallModal from "./components/profile/PaywallModal";
 import NotificationsModal from "./components/profile/NotificationsModal";
 import DeviceWellnessModal from "./components/profile/DeviceWellnessModal";
 import MedicalHistory from "./components/profile/MedicalHistory";
+import ContextIndicators from "./components/ui/ContextIndicators";
+import SuggestionCard from "./components/ui/SuggestionCard";
+import SensorPermissionsModal from "./components/profile/SensorPermissionsModal";
+import useContextualSensors from "./hooks/useContextualSensors";
+import useSuggestions from "./hooks/useSuggestions";
 import { useApp } from "./context/AppContext";
 import { EX } from "./data/exercises";
 import { intentions } from "./data/intentions";
@@ -19,10 +24,11 @@ import { tiers } from "./data/tiers";
 import { getRecommendations, isLocked } from "./hooks/useRecommendations";
 
 // ═══ HOME TAB ═════════════════════════════════════════════════
-function HomeTab() {
-  const { profile, streak, doneToday, tier, setModal, setTab } = useApp();
+function HomeTab({ sensorContext, suggestion, onAcceptSuggestion, onDismissSuggestion }) {
+  const { profile, streak, doneToday, tier, setModal, setTab, contextSensors } = useApp();
   const rec = getRecommendations(profile);
   const din = intentions[new Date().getDay() % intentions.length];
+  const sensorsEnabled = contextSensors.motion.enabled || contextSensors.gps.enabled;
 
   return (
     <div style={{ paddingBottom: 20 }}>
@@ -47,6 +53,14 @@ function HomeTab() {
             </div>
             <span style={{ color: "rgba(240,236,230,0.5)", fontSize: 13 }}>{doneToday.length} today</span>
           </div>
+          {sensorContext && (
+            <ContextIndicators
+              activity={sensorContext.activity}
+              location={sensorContext.location}
+              steps={sensorContext.steps}
+              sensorsEnabled={sensorsEnabled}
+            />
+          )}
         </div>
       </div>
 
@@ -98,6 +112,12 @@ function HomeTab() {
         </div>
         <Icon n="arrow" s={20} c={T.ac} />
       </div>
+
+      <SuggestionCard
+        suggestion={suggestion}
+        onAccept={onAcceptSuggestion}
+        onDismiss={onDismissSuggestion}
+      />
     </div>
   );
 }
@@ -195,7 +215,7 @@ function PlayTab() {
 }
 
 // ═══ CHAT TAB ═════════════════════════════════════════════════
-function ChatTab() {
+function ChatTab({ sensorContext }) {
   const { tier, profile, streak, doneToday, doneAll, setModal } = useApp();
   const [msgs, setMsgs] = useState([]);
   const [input, setInput] = useState("");
@@ -234,7 +254,8 @@ PHILOSOPHY: "Putting attention on expanding what feels good is the starting plac
 You have the user's profile and metrics. Give personalized recommendations. Be warm, embodied, direct. 2-4 paragraphs max. Reference David and Caroline's teachings naturally. Suggest specific exercises when relevant.
 Available exercises: yoga, stretch, strength, barefoot, somatic, nutrition, meditation, attention, sensory, memory, selfaware, imagine, pleasure, playful, creative, sensual.
 USER: ${p.name || "User"}, Age: ${p.age || "?"}, Experience: ${p.experience || "?"}, Goals: ${(p.goals || []).join(", ") || "none"}, Focus: ${(p.bodyAreas || []).join(", ") || "none"}, Mind: ${(p.mindInterest || []).join(", ") || "none"}, Time: ${p.timeAvail || "?"}, When: ${p.timeOfDay || "?"}.
-METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneToday.join(",") || "none"}), Total: ${doneAll.length}.`;
+METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneToday.join(",") || "none"}), Total: ${doneAll.length}.
+CONTEXT: Activity: ${sensorContext?.activity?.type || "unknown"}, Location: ${sensorContext?.location?.type || "unknown"}, Steps: ${sensorContext?.steps?.total || 0}, Time: ${sensorContext?.timeOfDay || "unknown"}.`;
       const hist = msgs.slice(-16).map((m) => ({ role: m.r === "user" ? "user" : "assistant", content: m.c }));
       const r = await fetch("https://api.anthropic.com/v1/messages", {
         method: "POST",
@@ -305,7 +326,7 @@ METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneTod
 
 // ═══ PROFILE TAB ══════════════════════════════════════════════
 function ProfileTab() {
-  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory } = useApp();
+  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory, contextSensors } = useApp();
 
   return (
     <div style={{ paddingBottom: 20 }}>
@@ -331,6 +352,7 @@ function ProfileTab() {
         { icon: "bell", c: T.ac, l: "Notifications", a: () => setModal({ t: "notifs" }) },
         { icon: "medical", c: T.sg, l: "Medical History", s: medicalHistory ? "Completed" : "Not yet filled", a: () => setScreen("medical") },
         { icon: "phone", c: T.oc, l: "Device Wellness", a: () => setModal({ t: "device" }) },
+        { icon: "shield", c: T.pl, l: "Context & Privacy", s: contextSensors.motion.enabled || contextSensors.gps.enabled ? "Tracking enabled" : "Not tracking", a: () => setModal({ t: "sensors" }) },
         { icon: "star", c: T.acS, l: "Upgrade Plan", a: () => setModal({ t: "pay" }) },
         { icon: "back", c: T.txL, l: "Retake Intake", a: () => setScreen("retake") },
       ].map((it, i) => (
@@ -368,6 +390,9 @@ export default function App() {
   } = useApp();
   const [runningExercise, setRunningExercise] = useState(null);
 
+  const sensorContext = useContextualSensors();
+  const { currentSuggestion, acceptSuggestion, dismissSuggestion } = useSuggestions(sensorContext);
+
   // Show intake flow
   if (screen === "intake") return <IntakeFlow />;
   if (screen === "retake") return <IntakeFlow skipWelcome />;
@@ -401,6 +426,16 @@ export default function App() {
     if (modal.t === "device") {
       return <DeviceWellnessModal onClose={() => setModal(null)} />;
     }
+    if (modal.t === "sensors") {
+      return (
+        <SensorPermissionsModal
+          onClose={() => setModal(null)}
+          onRequestMotion={sensorContext.requestMotionPermission}
+          onRequestGps={sensorContext.requestGpsPermission}
+          onSetHome={sensorContext.setHomeLocation}
+        />
+      );
+    }
     return null;
   };
 
@@ -427,11 +462,11 @@ export default function App() {
 
       {/* Tab content */}
       <div style={{ padding: "16px 18px 110px" }}>
-        {tab === "home" && <HomeTab />}
+        {tab === "home" && <HomeTab sensorContext={sensorContext} suggestion={currentSuggestion} onAcceptSuggestion={acceptSuggestion} onDismissSuggestion={dismissSuggestion} />}
         {tab === "body" && <BodyTab />}
         {tab === "mind" && <MindTab />}
         {tab === "play" && <PlayTab />}
-        {tab === "chat" && <ChatTab />}
+        {tab === "chat" && <ChatTab sensorContext={sensorContext} />}
         {tab === "profile" && <ProfileTab />}
       </div>
 

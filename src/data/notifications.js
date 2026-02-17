@@ -7,4 +7,5 @@ export const notifCategories = [
   { id: "evening", l: "Evening Wind-down", d: 2 },
   { id: "insight", l: "Device Wellness", d: 0 },
   { id: "community", l: "Community", d: 1 },
+  { id: "context", l: "Smart Suggestions", d: 2 },
 ];
