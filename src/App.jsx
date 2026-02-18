@@ -225,7 +225,7 @@ function PlayTab() {
           <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
             {journalEntries.map((e, i) => {
               const d = new Date(e.dt);
-              const dateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              const dateStr = d.toLocaleDateString("en-US", { weekday: "long", month: "short", day: "numeric", year: "numeric" });
               const timeStr = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
               return (
                 <div key={i} style={{ padding: "12px 14px", background: T.bgW, borderRadius: 12, borderLeft: `3px solid ${T.cl}` }}>
