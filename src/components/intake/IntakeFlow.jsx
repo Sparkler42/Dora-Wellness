@@ -53,6 +53,24 @@ export default function IntakeFlow({ skipWelcome = false }) {
             Your practice is ready. You can jump right in, or take a moment to tell us more about yourself.
           </p>
           <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
+            <p style={{ color: T.txM, fontSize: 14, margin: "0 0 -4px", lineHeight: 1.5, fontStyle: "italic" }}>
+              The more we know, the better your practice becomes.
+            </p>
+            <button
+              onClick={() => finishIntake(true)}
+              style={{
+                width: "100%", padding: "18px 20px", borderRadius: 16,
+                border: "none",
+                background: `linear-gradient(135deg, ${T.cl}, ${T.pl})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'",
+                boxShadow: `0 4px 16px ${T.pl}40`,
+              }}
+            >
+              Dive Deeper
+            </button>
+            <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's get to know each other more</p>
+            <div style={{ height: 4 }} />
             <button
               onClick={() => finishIntake(false)}
               style={{
@@ -65,24 +83,6 @@ export default function IntakeFlow({ skipWelcome = false }) {
               Dive In
             </button>
             <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's play</p>
-            <div style={{ height: 12 }} />
-            <p style={{ color: T.txM, fontSize: 14, margin: "0 0 10px", lineHeight: 1.5, fontStyle: "italic" }}>
-              The more we know, the better your practice becomes.
-            </p>
-            <button
-              onClick={() => finishIntake(true)}
-              style={{
-                width: "100%", padding: "18px 20px", borderRadius: 16,
-                border: "none",
-                background: `linear-gradient(135deg, ${T.cl}28, ${T.pl}22, ${T.ac}18)`,
-                color: T.tx, fontSize: 17, fontWeight: 600, cursor: "pointer",
-                fontFamily: "'DM Sans'",
-                boxShadow: `0 2px 12px ${T.cl}20`,
-              }}
-            >
-              Dive Deeper
-            </button>
-            <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's get to know each other more</p>
           </div>
         </div>
         <div style={{ height: 60 }} />
