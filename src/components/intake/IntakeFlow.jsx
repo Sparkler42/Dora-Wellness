@@ -7,13 +7,82 @@ import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
 
 export default function IntakeFlow({ skipWelcome = false }) {
-  const { setProfile, setScreen, setNotifs } = useApp();
+  const { setProfile, setScreen, setNotifs, setDiveDeeper, setTab } = useApp();
   const [showWelcome, setShowWelcome] = useState(!skipWelcome);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
+  const [showFork, setShowFork] = useState(false);
+
+  const finishIntake = (goDeeper) => {
+    const p = { ...answers };
+    const nl = ["Very gently \u2014 minimal", "Balanced \u2014 a few daily", "Actively \u2014 keep me on track", "I'll come on my own"].indexOf(p.notifications);
+    setNotifs(
+      Object.fromEntries(
+        notifCategories.map((n) => [
+          n.id,
+          n.id === "insight" ? (p.deviceWellness?.startsWith("Yes") ? 2 : 0) : Math.max(0, nl),
+        ])
+      )
+    );
+    setProfile(p);
+    if (goDeeper) {
+      setDiveDeeper((prev) => ({ ...prev, started: true }));
+      setTab("profile");
+    }
+    setScreen("app");
+  };
 
   if (showWelcome) {
     return <WelcomeScreen onStart={() => setShowWelcome(false)} />;
+  }
+
+  if (showFork) {
+    return (
+      <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, minHeight: "100vh", maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "20px 22px 0" }}>
+          <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 20px" }}>
+            <span style={{ color: T.ac }}>spark</span>
+          </h1>
+        </div>
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+          <Icon n="sparkle" s={40} c={T.ac} />
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 26, color: T.tx, margin: "20px 0 10px", lineHeight: 1.3 }}>
+            You're all set, {answers.name || "friend"}
+          </h2>
+          <p style={{ color: T.txL, fontSize: 15, lineHeight: 1.6, margin: "0 0 40px", maxWidth: 320 }}>
+            Your practice is ready. You can jump right in, or take a moment to tell us more about yourself.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 14, width: "100%" }}>
+            <button
+              onClick={() => finishIntake(false)}
+              style={{
+                width: "100%", padding: "18px 20px", border: "none", borderRadius: 16,
+                background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'",
+              }}
+            >
+              Dive In
+            </button>
+            <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's play</p>
+            <div style={{ height: 8 }} />
+            <button
+              onClick={() => finishIntake(true)}
+              style={{
+                width: "100%", padding: "18px 20px", borderRadius: 16,
+                border: `1.5px solid ${T.ac}30`, background: T.acG,
+                color: T.ac, fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'",
+              }}
+            >
+              Dive Deeper
+            </button>
+            <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's get to know each other more</p>
+          </div>
+        </div>
+        <div style={{ height: 60 }} />
+      </div>
+    );
   }
 
   const q = intakeQuestions[step];
@@ -36,18 +105,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
     if (step < intakeQuestions.length - 1) {
       setStep((s) => s + 1);
     } else {
-      const p = { ...answers };
-      const nl = ["Very gently \u2014 minimal", "Balanced \u2014 a few daily", "Actively \u2014 keep me on track", "I'll come on my own"].indexOf(p.notifications);
-      setNotifs(
-        Object.fromEntries(
-          notifCategories.map((n) => [
-            n.id,
-            n.id === "insight" ? (p.deviceWellness?.startsWith("Yes") ? 2 : 0) : Math.max(0, nl),
-          ])
-        )
-      );
-      setProfile(p);
-      setScreen("main");
+      setShowFork(true);
     }
   };
 
