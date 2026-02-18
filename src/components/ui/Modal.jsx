@@ -1,3 +1,4 @@
+import React from "react";
 import { T } from "../../styles/tokens";
 
 export default function Modal({ children, dark, onClose }) {

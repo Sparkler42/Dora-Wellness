@@ -1,3 +1,4 @@
+import React from "react";
 import Icon from "../ui/Icon";
 import { T } from "../../styles/tokens";
 import { useApp } from "../../context/AppContext";

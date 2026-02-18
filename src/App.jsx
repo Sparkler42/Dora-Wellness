@@ -12,6 +12,7 @@ import PaywallModal from "./components/profile/PaywallModal";
 import NotificationsModal from "./components/profile/NotificationsModal";
 import DeviceWellnessModal from "./components/profile/DeviceWellnessModal";
 import MedicalHistory from "./components/profile/MedicalHistory";
+import DiveDeeper from "./components/profile/DiveDeeper";
 import ContextIndicators from "./components/ui/ContextIndicators";
 import SuggestionCard from "./components/ui/SuggestionCard";
 import SensorPermissionsModal from "./components/profile/SensorPermissionsModal";
@@ -26,7 +27,7 @@ import { getRecommendations, isLocked } from "./hooks/useRecommendations";
 // ═══ HOME TAB ═════════════════════════════════════════════════
 function HomeTab({ sensorContext, suggestion, onAcceptSuggestion, onDismissSuggestion }) {
   const { profile, streak, doneToday, tier, setModal, setTab, contextSensors } = useApp();
-  const rec = getRecommendations(profile);
+  const rec = getRecommendations(profile, { doneToday });
   const din = intentions[new Date().getDay() % intentions.length];
   const sensorsEnabled = contextSensors.motion.enabled || contextSensors.gps.enabled;
 
@@ -368,6 +369,8 @@ function ProfileTab() {
         </div>
       ))}
 
+      <DiveDeeper />
+
       <div style={{ background: T.bgD, borderRadius: 20, padding: "22px 20px", marginTop: 20, position: "relative", overflow: "hidden" }}>
         <Orb color={T.ac} sz="80px" top="-20px" left="-10px" d={2} />
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -378,6 +381,17 @@ function ProfileTab() {
           <p style={{ color: "rgba(240,236,230,0.5)", fontSize: 13, margin: 0, fontStyle: "italic" }}>&ldquo;You are already doing it right.&rdquo;</p>
         </div>
       </div>
+
+      <button
+        onClick={() => { localStorage.removeItem("spark"); window.location.reload(); }}
+        style={{
+          width: "100%", marginTop: 20, padding: "12px 16px", border: `1.5px solid ${T.cl}30`,
+          borderRadius: 14, background: "transparent", color: T.cl, fontSize: 14,
+          fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans'",
+        }}
+      >
+        Start Fresh
+      </button>
     </div>
   );
 }

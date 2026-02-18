@@ -1,3 +1,4 @@
+import React from "react";
 export default function Orb({ color, sz, top, left, d = 0 }) {
   return (
     <div

@@ -1,3 +1,4 @@
+import React from "react";
 import { T } from "../../styles/tokens";
 
 export default function Icon({ n, s = 22, c = T.txM }) {

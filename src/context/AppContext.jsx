@@ -60,6 +60,7 @@ export function AppProvider({ children }) {
     stepResetDate: new Date().toISOString().slice(0, 10),
   });
   const [suggestionHistory, setSuggestionHistory] = useState(saved?.suggestionHistory || []);
+  const [diveDeeper, setDiveDeeper] = useState(saved?.diveDeeper || { started: false, sections: {} });
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -67,8 +68,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -93,6 +94,7 @@ export function AppProvider({ children }) {
     deviceUsage, setDeviceUsage,
     contextSensors, setContextSensors,
     suggestionHistory, setSuggestionHistory,
+    diveDeeper, setDiveDeeper,
     mounted,
     completeExercise,
   };

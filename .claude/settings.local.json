@@ -20,7 +20,14 @@
       "Bash(git push:*)",
       "Bash(git rm:*)",
       "Bash(npm run build:*)",
-      "Bash(npm run deploy:*)"
+      "Bash(npm run deploy:*)",
+      "Bash(gh api:*)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:sparkler42.github.io)",
+      "Bash(git fetch:*)",
+      "Bash(git stash:*)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(node -e:*)"
     ]
   }
 }
