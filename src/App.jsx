@@ -357,9 +357,15 @@ function ProfileTab() {
 
   useEffect(() => {
     if (diveDeeper.scrollTo) {
-      const el = document.getElementById("dive-deeper");
-      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
       setDiveDeeper((prev) => ({ ...prev, scrollTo: false }));
+      setTimeout(() => {
+        const el = document.getElementById("dive-deeper");
+        if (el) {
+          const headerHeight = 50;
+          const y = el.getBoundingClientRect().top + window.scrollY - headerHeight;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }, 400);
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
