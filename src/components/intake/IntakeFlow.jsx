@@ -65,14 +65,19 @@ export default function IntakeFlow({ skipWelcome = false }) {
               Dive In
             </button>
             <p style={{ color: T.txL, fontSize: 13, margin: "-4px 0 0" }}>Let's play</p>
-            <div style={{ height: 8 }} />
+            <div style={{ height: 12 }} />
+            <p style={{ color: T.txM, fontSize: 14, margin: "0 0 10px", lineHeight: 1.5, fontStyle: "italic" }}>
+              The more we know, the better your practice becomes.
+            </p>
             <button
               onClick={() => finishIntake(true)}
               style={{
                 width: "100%", padding: "18px 20px", borderRadius: 16,
-                border: `1.5px solid ${T.ac}30`, background: T.acG,
-                color: T.ac, fontSize: 17, fontWeight: 600, cursor: "pointer",
+                border: "none",
+                background: `linear-gradient(135deg, ${T.cl}28, ${T.pl}22, ${T.ac}18)`,
+                color: T.tx, fontSize: 17, fontWeight: 600, cursor: "pointer",
                 fontFamily: "'DM Sans'",
+                boxShadow: `0 2px 12px ${T.cl}20`,
               }}
             >
               Dive Deeper
