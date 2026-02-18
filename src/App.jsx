@@ -177,8 +177,10 @@ function MindTab() {
 
 // ═══ PLAY TAB ═════════════════════════════════════════════════
 function PlayTab() {
-  const { setDoneAll, setStreak } = useApp();
+  const { doneAll, setDoneAll, setStreak } = useApp();
   const [jEntry, setJEntry] = useState("");
+  const [showLog, setShowLog] = useState(false);
+  const journalEntries = doneAll.filter((e) => e.id === "journal" && e.note).sort((a, b) => b.dt.localeCompare(a.dt));
 
   return (
     <div style={{ paddingBottom: 20 }}>
@@ -209,6 +211,30 @@ function PlayTab() {
           >
             Save Entry
           </button>
+        )}
+        {journalEntries.length > 0 && (
+          <button
+            onClick={() => setShowLog(!showLog)}
+            style={{ marginTop: 14, padding: "8px 16px", border: `1.5px solid ${T.cl}30`, borderRadius: 10, background: "transparent", color: T.cl, fontSize: 13, fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans'", display: "flex", alignItems: "center", gap: 6 }}
+          >
+            <Icon n="clock" s={14} c={T.cl} />
+            {showLog ? "Hide" : "View"} Journal Log ({journalEntries.length})
+          </button>
+        )}
+        {showLog && journalEntries.length > 0 && (
+          <div style={{ marginTop: 12, display: "flex", flexDirection: "column", gap: 10 }}>
+            {journalEntries.map((e, i) => {
+              const d = new Date(e.dt);
+              const dateStr = d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+              const timeStr = d.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
+              return (
+                <div key={i} style={{ padding: "12px 14px", background: T.bgW, borderRadius: 12, borderLeft: `3px solid ${T.cl}` }}>
+                  <p style={{ margin: "0 0 6px", fontSize: 11, color: T.txL, fontWeight: 500 }}>{dateStr} · {timeStr}</p>
+                  <p style={{ margin: 0, fontSize: 14, color: T.tx, lineHeight: 1.5 }}>{e.note}</p>
+                </div>
+              );
+            })}
+          </div>
         )}
       </div>
     </div>
