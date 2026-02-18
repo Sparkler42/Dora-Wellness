@@ -144,6 +144,16 @@ export default function IntakeFlow({ skipWelcome = false }) {
           />
         )}
 
+        {q.tp === "date" && (
+          <input
+            type="date"
+            value={ans || ""}
+            onChange={(e) => setA(e.target.value)}
+            autoFocus
+            style={{ width: "100%", padding: "16px 18px", borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, fontSize: 18, fontFamily: "'DM Sans'", color: T.tx, outline: "none", boxSizing: "border-box" }}
+          />
+        )}
+
         {q.tp === "choice" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
             {q.o.map((o) => (

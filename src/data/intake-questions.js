@@ -1,6 +1,6 @@
 export const intakeQuestions = [
   { id: "name", q: "What should we call you?", tp: "text", ph: "Your first name" },
-  { id: "age", q: "What's your age range?", tp: "choice", o: ["18\u201329", "30\u201339", "40\u201349", "50\u201359", "60+"] },
+  { id: "birthday", q: "When's your birthday?", tp: "date", ph: "MM/DD/YYYY" },
   { id: "experience", q: "How would you describe your movement experience?", tp: "choice", o: ["Brand new \u2014 I'm curious", "Some yoga or stretching", "Regular mover", "Advanced \u2014 years of practice"] },
   { id: "goals", q: "What draws you to Spark?", tp: "multi", o: ["Reduce pain or tension", "Build strength", "Improve flexibility", "Mental clarity", "Stress relief", "Better sleep", "Self-discovery", "Fun & play", "Body connection"] },
   { id: "bodyAreas", q: "Areas of your body to focus on?", tp: "multi", o: ["Feet & ankles", "Knees", "Hips & pelvis", "Lower back", "Core", "Shoulders", "Neck & jaw", "Whole body", "Nothing specific"] },
