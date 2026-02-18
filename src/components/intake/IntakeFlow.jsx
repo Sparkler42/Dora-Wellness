@@ -26,7 +26,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
     );
     setProfile(p);
     if (goDeeper) {
-      setDiveDeeper((prev) => ({ ...prev, started: true }));
+      setDiveDeeper((prev) => ({ ...prev, started: true, scrollTo: true }));
       setTab("profile");
     }
     setScreen("app");

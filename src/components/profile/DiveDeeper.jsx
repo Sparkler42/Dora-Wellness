@@ -206,7 +206,7 @@ export default function DiveDeeper() {
   };
 
   return (
-    <div style={{ marginTop: 24 }} onClick={handleExpand}>
+    <div id="dive-deeper" style={{ marginTop: 24 }} onClick={handleExpand}>
       <SectionHeader icon="sparkle" ic={T.ac} title="Dive Deeper" sub="Your evolving story — return anytime to add or update." />
 
       {showNudge && (

@@ -353,7 +353,15 @@ CONTEXT: Activity: ${sensorContext?.activity?.type || "unknown"}, Location: ${se
 
 // ═══ PROFILE TAB ══════════════════════════════════════════════
 function ProfileTab() {
-  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory, contextSensors } = useApp();
+  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory, contextSensors, diveDeeper, setDiveDeeper } = useApp();
+
+  useEffect(() => {
+    if (diveDeeper.scrollTo) {
+      const el = document.getElementById("dive-deeper");
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 100);
+      setDiveDeeper((prev) => ({ ...prev, scrollTo: false }));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div style={{ paddingBottom: 20 }}>
