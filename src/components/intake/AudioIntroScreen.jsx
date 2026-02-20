@@ -12,7 +12,8 @@ export default function AudioIntroScreen({ onContinue }) {
   const rafRef = useRef(null);
 
   useEffect(() => {
-    const audio = new Audio("/audio/intro.mp3");
+    const base = import.meta.env.BASE_URL || "/";
+    const audio = new Audio(`${base}audio/Spark Intro.mp3`);
     audioRef.current = audio;
 
     audio.addEventListener("loadedmetadata", () => setDuration(audio.duration));
