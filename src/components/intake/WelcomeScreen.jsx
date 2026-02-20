@@ -1,7 +1,40 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { T } from "../../styles/tokens";
 import Orb from "../ui/Orb";
 import Icon from "../ui/Icon";
+
+function Sparkle({ delay, x, y, size, color }) {
+  const [visible, setVisible] = useState(false);
+  useEffect(() => {
+    const t1 = setTimeout(() => setVisible(true), delay);
+    return () => clearTimeout(t1);
+  }, [delay]);
+
+  return (
+    <div
+      style={{
+        position: "absolute",
+        left: x,
+        top: y,
+        width: size,
+        height: size,
+        opacity: visible ? 1 : 0,
+        transition: "opacity 0.3s ease",
+        animation: visible ? `sparkle-twinkle ${1.5 + Math.random()}s ease-in-out infinite` : "none",
+        animationDelay: `${Math.random() * 0.5}s`,
+        pointerEvents: "none",
+        zIndex: 2,
+      }}
+    >
+      <svg viewBox="0 0 24 24" width={size} height={size}>
+        <path
+          d="M12 0 L14 10 L24 12 L14 14 L12 24 L10 14 L0 12 L10 10 Z"
+          fill={color}
+        />
+      </svg>
+    </div>
+  );
+}
 
 export default function WelcomeScreen({ onStart }) {
   const [phase, setPhase] = useState(0);
@@ -14,6 +47,18 @@ export default function WelcomeScreen({ onStart }) {
       setTimeout(() => setPhase(4), 3200),
     ];
     return () => timers.forEach(clearTimeout);
+  }, []);
+
+  const sparkles = useMemo(() => {
+    const colors = [T.ac, T.acS, "#fff", T.sg, T.cl, T.oc];
+    return Array.from({ length: 20 }, (_, i) => ({
+      id: i,
+      x: `${5 + Math.random() * 90}%`,
+      y: `${5 + Math.random() * 90}%`,
+      size: 8 + Math.random() * 14,
+      color: colors[i % colors.length],
+      delay: 800 + i * 150,
+    }));
   }, []);
 
   return (
@@ -32,88 +77,123 @@ export default function WelcomeScreen({ onStart }) {
         overflow: "hidden",
       }}
     >
+      <style>{`
+        @keyframes sparkle-twinkle {
+          0%, 100% { opacity: 0.2; transform: scale(0.6) rotate(0deg); }
+          50% { opacity: 1; transform: scale(1) rotate(180deg); }
+        }
+        @keyframes shimmer {
+          0% { background-position: -200% center; }
+          100% { background-position: 200% center; }
+        }
+        @keyframes float-gentle {
+          0%, 100% { transform: translateY(0); }
+          50% { transform: translateY(-8px); }
+        }
+        @keyframes glow-pulse {
+          0%, 100% { box-shadow: 0 0 20px ${T.ac}30, 0 0 60px ${T.ac}10; }
+          50% { box-shadow: 0 0 30px ${T.ac}50, 0 0 80px ${T.ac}20; }
+        }
+      `}</style>
+
       {/* Floating orbs */}
       <Orb color={T.ac} sz="180px" top="8%" left="-15%" d={0} />
       <Orb color={T.sg} sz="140px" top="55%" left="72%" d={2} />
       <Orb color={T.pl} sz="100px" top="75%" left="10%" d={4} />
       <Orb color={T.oc} sz="90px" top="15%" left="80%" d={6} />
 
-      {/* Content */}
-      <div style={{ position: "relative", zIndex: 1, textAlign: "center", padding: "0 32px", width: "100%" }}>
+      {/* Sparkle particles */}
+      {sparkles.map((s) => (
+        <Sparkle key={s.id} delay={s.delay} x={s.x} y={s.y} size={s.size} color={s.color} />
+      ))}
 
-        {/* Lotus icon */}
+      {/* Content */}
+      <div style={{ position: "relative", zIndex: 3, textAlign: "center", padding: "0 32px", width: "100%" }}>
+
+        {/* Sparkle icon */}
         <div
           style={{
             opacity: phase >= 1 ? 1 : 0,
             transform: phase >= 1 ? "scale(1)" : "scale(0.5)",
             transition: "all 1s cubic-bezier(0.16, 1, 0.3, 1)",
             marginBottom: 28,
+            animation: phase >= 1 ? "float-gentle 3s ease-in-out infinite" : "none",
           }}
         >
           <div
             style={{
-              width: 64,
-              height: 64,
+              width: 72,
+              height: 72,
               borderRadius: "50%",
-              background: `linear-gradient(135deg, ${T.ac}30, ${T.sg}30)`,
+              background: `linear-gradient(135deg, ${T.ac}40, ${T.acS}40)`,
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
               margin: "0 auto",
               backdropFilter: "blur(10px)",
+              animation: phase >= 1 ? "glow-pulse 3s ease-in-out infinite" : "none",
             }}
           >
-            <Icon n="lotus" s={32} c={T.acS} />
+            <Icon n="sparkle" s={34} c={T.acS} />
           </div>
         </div>
 
-        {/* "spark" */}
-        <div style={{ overflow: "hidden", marginBottom: 40 }}>
+        {/* "Spark" — big shimmer text */}
+        <div style={{ overflow: "hidden", marginBottom: 16 }}>
           <h1
             style={{
               fontFamily: "'DM Serif Display',serif",
-              fontSize: 52,
-              color: T.acS,
+              fontSize: 58,
               margin: 0,
-              letterSpacing: "4px",
+              letterSpacing: "5px",
               fontWeight: 400,
               opacity: phase >= 1 ? 1 : 0,
               transform: phase >= 1 ? "translateY(0)" : "translateY(100%)",
               transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+              background: `linear-gradient(90deg, ${T.acS}, #fff, ${T.ac}, #fff, ${T.acS})`,
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: phase >= 1 ? "shimmer 4s linear infinite" : "none",
             }}
           >
-            spark
+            Spark
           </h1>
+        </div>
+
+        {/* "Your Attention" */}
+        <div style={{ overflow: "hidden", marginBottom: 40 }}>
+          <p
+            style={{
+              fontFamily: "'DM Serif Display',serif",
+              fontSize: 26,
+              color: T.txD,
+              margin: 0,
+              letterSpacing: "2px",
+              fontWeight: 400,
+              opacity: phase >= 2 ? 1 : 0,
+              transform: phase >= 2 ? "translateY(0)" : "translateY(100%)",
+              transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+            }}
+          >
+            Your Attention
+          </p>
         </div>
 
         {/* Divider line */}
         <div
           style={{
-            width: phase >= 2 ? 60 : 0,
-            height: 1,
-            background: `linear-gradient(90deg, transparent, ${T.acS}, transparent)`,
+            width: phase >= 2 ? 80 : 0,
+            height: 2,
+            background: `linear-gradient(90deg, transparent, ${T.acS}, ${T.ac}, ${T.acS}, transparent)`,
             margin: "0 auto 36px",
             transition: "width 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
+            borderRadius: 1,
           }}
         />
 
-        {/* Welcome line 1 */}
-        <p
-          style={{
-            fontFamily: "'DM Serif Display',serif",
-            fontSize: 22,
-            color: T.txD,
-            lineHeight: 1.5,
-            margin: "0 0 14px",
-            opacity: phase >= 2 ? 1 : 0,
-            transform: phase >= 2 ? "translateY(0)" : "translateY(16px)",
-            transition: "all 0.8s cubic-bezier(0.16, 1, 0.3, 1)",
-          }}
-        >
-          Welcome to your longevity
-        </p>
-
-        {/* Welcome line 2 */}
+        {/* Tagline */}
         <p
           style={{
             fontFamily: "'DM Sans',sans-serif",
@@ -130,7 +210,7 @@ export default function WelcomeScreen({ onStart }) {
           We are delighted to begin this journey with you.
         </p>
 
-        {/* Welcome line 3 */}
+        {/* Quote */}
         <p
           style={{
             fontFamily: "'DM Serif Display',serif",
