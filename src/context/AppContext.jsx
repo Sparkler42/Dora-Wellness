@@ -61,6 +61,7 @@ export function AppProvider({ children }) {
   });
   const [suggestionHistory, setSuggestionHistory] = useState(saved?.suggestionHistory || []);
   const [diveDeeper, setDiveDeeper] = useState(saved?.diveDeeper || { started: false, sections: {} });
+  const [audioIntroSeen, setAudioIntroSeen] = useState(saved?.audioIntroSeen || false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -68,8 +69,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -95,6 +96,7 @@ export function AppProvider({ children }) {
     contextSensors, setContextSensors,
     suggestionHistory, setSuggestionHistory,
     diveDeeper, setDiveDeeper,
+    audioIntroSeen, setAudioIntroSeen,
     mounted,
     completeExercise,
   };

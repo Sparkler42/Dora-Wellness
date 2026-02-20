@@ -5,10 +5,12 @@ import { intakeQuestions } from "../../data/intake-questions";
 import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
+import AudioIntroScreen from "./AudioIntroScreen";
 
 export default function IntakeFlow({ skipWelcome = false }) {
-  const { setProfile, setScreen, setNotifs, setDiveDeeper, setTab } = useApp();
+  const { setProfile, setScreen, setNotifs, setDiveDeeper, setTab, audioIntroSeen, setAudioIntroSeen } = useApp();
   const [showWelcome, setShowWelcome] = useState(!skipWelcome);
+  const [showAudioIntro, setShowAudioIntro] = useState(!skipWelcome && !audioIntroSeen);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showFork, setShowFork] = useState(false);
@@ -34,6 +36,17 @@ export default function IntakeFlow({ skipWelcome = false }) {
 
   if (showWelcome) {
     return <WelcomeScreen onStart={() => setShowWelcome(false)} />;
+  }
+
+  if (showAudioIntro) {
+    return (
+      <AudioIntroScreen
+        onContinue={() => {
+          setAudioIntroSeen(true);
+          setShowAudioIntro(false);
+        }}
+      />
+    );
   }
 
   if (showFork) {
