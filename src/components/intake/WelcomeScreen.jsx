@@ -36,8 +36,12 @@ function Sparkle({ delay, x, y, size, color }) {
   );
 }
 
+const cycleWords = ["Attention", "Imagination", "Health", "Wellbeing", "Movement", "Curiosity", "Presence", "Play"];
+
 export default function WelcomeScreen({ onStart }) {
   const [phase, setPhase] = useState(0);
+  const [wordIdx, setWordIdx] = useState(0);
+  const [wordFade, setWordFade] = useState(true);
 
   useEffect(() => {
     const timers = [
@@ -48,6 +52,18 @@ export default function WelcomeScreen({ onStart }) {
     ];
     return () => timers.forEach(clearTimeout);
   }, []);
+
+  useEffect(() => {
+    if (phase < 2) return;
+    const interval = setInterval(() => {
+      setWordFade(false);
+      setTimeout(() => {
+        setWordIdx((i) => (i + 1) % cycleWords.length);
+        setWordFade(true);
+      }, 400);
+    }, 2800);
+    return () => clearInterval(interval);
+  }, [phase]);
 
   const sparkles = useMemo(() => {
     const colors = [T.ac, T.acS, "#fff", T.sg, T.cl, T.oc];
@@ -162,8 +178,8 @@ export default function WelcomeScreen({ onStart }) {
           </h1>
         </div>
 
-        {/* "Your Attention" */}
-        <div style={{ overflow: "hidden", marginBottom: 40 }}>
+        {/* "Your ___" cycling word */}
+        <div style={{ overflow: "hidden", marginBottom: 40, height: 38 }}>
           <p
             style={{
               fontFamily: "'DM Serif Display',serif",
@@ -177,7 +193,17 @@ export default function WelcomeScreen({ onStart }) {
               transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            Your Attention
+            Your{" "}
+            <span
+              style={{
+                display: "inline-block",
+                opacity: wordFade ? 1 : 0,
+                transform: wordFade ? "translateY(0)" : "translateY(8px)",
+                transition: "opacity 0.4s ease, transform 0.4s ease",
+              }}
+            >
+              {cycleWords[wordIdx]}
+            </span>
           </p>
         </div>
 
