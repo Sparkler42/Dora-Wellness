@@ -2,10 +2,154 @@ import { useState } from "react";
 import Icon from "../ui/Icon";
 import { T } from "../../styles/tokens";
 import { intakeQuestions } from "../../data/intake-questions";
+import { intakeDescriptors } from "../../data/intakeDescriptors";
 import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
 import AudioIntroScreen from "./AudioIntroScreen";
+
+function InfoButton({ option, onOpen }) {
+  if (!intakeDescriptors[option]) return null;
+  return (
+    <span
+      onClick={(e) => {
+        e.stopPropagation();
+        onOpen({ title: option, body: intakeDescriptors[option] });
+      }}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        width: 22,
+        height: 22,
+        borderRadius: "50%",
+        background: T.bgW,
+        color: T.txL,
+        fontSize: 13,
+        fontWeight: 600,
+        cursor: "pointer",
+        flexShrink: 0,
+        marginLeft: 8,
+        fontFamily: "serif",
+        lineHeight: 1,
+      }}
+    >
+      i
+    </span>
+  );
+}
+
+function DescriptorOverlay({ descriptor, onClose }) {
+  if (!descriptor) return null;
+  return (
+    <div
+      onClick={onClose}
+      style={{
+        position: "fixed",
+        inset: 0,
+        zIndex: 200,
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        background: "rgba(44,40,37,0.5)",
+        backdropFilter: "blur(6px)",
+        padding: 20,
+        animation: "descFadeIn 0.25s ease",
+      }}
+    >
+      <style>{`
+        @keyframes descFadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
+      <div
+        onClick={(e) => e.stopPropagation()}
+        style={{
+          background: T.bgC,
+          borderRadius: 20,
+          padding: "24px 22px 20px",
+          maxWidth: 360,
+          width: "100%",
+          maxHeight: "80vh",
+          overflowY: "auto",
+          boxShadow: T.shE,
+          position: "relative",
+        }}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          style={{
+            position: "absolute",
+            top: 14,
+            right: 14,
+            width: 28,
+            height: 28,
+            borderRadius: "50%",
+            border: "none",
+            background: T.bgW,
+            color: T.txL,
+            fontSize: 16,
+            cursor: "pointer",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontFamily: "'DM Sans'",
+            lineHeight: 1,
+          }}
+        >
+          ✕
+        </button>
+
+        {/* Title */}
+        <h3
+          style={{
+            fontFamily: "'DM Serif Display',serif",
+            fontSize: 20,
+            color: T.tx,
+            margin: "0 0 14px",
+            paddingRight: 32,
+            lineHeight: 1.3,
+          }}
+        >
+          {descriptor.title}
+        </h3>
+
+        {/* Body */}
+        <p
+          style={{
+            fontSize: 14,
+            color: T.txM,
+            lineHeight: 1.7,
+            margin: "0 0 20px",
+          }}
+        >
+          {descriptor.body}
+        </p>
+
+        {/* Got it button */}
+        <button
+          onClick={onClose}
+          style={{
+            width: "100%",
+            padding: "12px 16px",
+            border: "none",
+            borderRadius: 12,
+            background: T.bgW,
+            color: T.txM,
+            fontSize: 14,
+            fontWeight: 500,
+            cursor: "pointer",
+            fontFamily: "'DM Sans'",
+          }}
+        >
+          Got it
+        </button>
+      </div>
+    </div>
+  );
+}
 
 export default function IntakeFlow({ skipWelcome = false }) {
   const { setProfile, setScreen, setNotifs, setDiveDeeper, setTab, audioIntroSeen, setAudioIntroSeen } = useApp();
@@ -14,6 +158,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showFork, setShowFork] = useState(false);
+  const [descriptor, setDescriptor] = useState(null);
 
   const finishIntake = (goDeeper) => {
     const p = { ...answers };
@@ -179,9 +324,11 @@ export default function IntakeFlow({ skipWelcome = false }) {
                   background: ans === o ? T.acG : T.bgC,
                   textAlign: "left", fontSize: 15, color: T.tx, cursor: "pointer",
                   fontFamily: "'DM Sans'", fontWeight: ans === o ? 600 : 400, transition: "all 0.2s",
+                  display: "flex", alignItems: "center", justifyContent: "space-between",
                 }}
               >
-                {o}
+                <span>{o}</span>
+                <InfoButton option={o} onOpen={setDescriptor} />
               </button>
             ))}
           </div>
@@ -201,9 +348,11 @@ export default function IntakeFlow({ skipWelcome = false }) {
                     background: sel ? T.acG : T.bgC,
                     fontSize: 14, color: sel ? T.ac : T.txM, cursor: "pointer",
                     fontFamily: "'DM Sans'", fontWeight: sel ? 600 : 400, transition: "all 0.2s",
+                    display: "flex", alignItems: "center", gap: 4,
                   }}
                 >
-                  {o}
+                  <span>{o}</span>
+                  <InfoButton option={o} onOpen={setDescriptor} />
                 </button>
               );
             })}
@@ -235,6 +384,8 @@ export default function IntakeFlow({ skipWelcome = false }) {
           </button>
         </div>
       </div>
+
+      <DescriptorOverlay descriptor={descriptor} onClose={() => setDescriptor(null)} />
     </div>
   );
 }
