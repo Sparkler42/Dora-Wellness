@@ -1,132 +1,109 @@
 /**
- * Bell chime sound for exercise timers.
- * Plays a pre-recorded bell MP3 file from public/sounds/transitionbell.mp3,
- * capped at 3 seconds. Uses Web Audio API for precise control.
+ * Low resonant gong sound for exercise timers.
+ * Uses Web Audio API synthesis — no external audio file needed.
  */
 
 let audioCtx = null;
-let bellBuffer = null;
-let bufferLoading = false;
 
 function getContext() {
   if (!audioCtx) {
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    console.log("[SingingBowl] AudioContext created, state:", audioCtx.state);
   }
   return audioCtx;
 }
 
 /**
- * Preload the bell sound into an AudioBuffer.
- */
-async function loadBellBuffer() {
-  if (bellBuffer || bufferLoading) return;
-  bufferLoading = true;
-  try {
-    const ctx = getContext();
-    const base = import.meta.env.BASE_URL || "/";
-    const url = `${base}sounds/transitionbell.mp3`;
-    console.log("[SingingBowl] Loading bell sound from:", url);
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
-    bellBuffer = await ctx.decodeAudioData(arrayBuffer);
-    console.log("[SingingBowl] Bell sound loaded, duration:", bellBuffer.duration.toFixed(2), "s");
-  } catch (err) {
-    console.warn("[SingingBowl] Failed to load bell sound:", err);
-    bufferLoading = false;
-  }
-}
-
-/**
  * Unlock the AudioContext — must be called from a user-gesture handler
- * (click/tap) so browsers allow audio playback. Also preloads the bell sound.
+ * (click/tap) so browsers allow audio playback.
  */
 export async function unlockAudio() {
   const ctx = getContext();
   if (ctx.state === "suspended") {
-    console.log("[SingingBowl] AudioContext suspended, resuming…");
     await ctx.resume();
-    console.log("[SingingBowl] AudioContext resumed, state:", ctx.state);
   }
-  loadBellBuffer();
 }
 
 /**
- * Play the bell chime sound.
+ * Play a low resonant gong sound.
  * @param {"step"|"complete"} type — "step" for between steps,
- *   "complete" for exercise end (played slightly louder).
+ *   "complete" for exercise end (played slightly louder/longer).
  */
 export function playSingingBowl(type = "step") {
   try {
     const ctx = getContext();
-    const isComplete = type === "complete";
-    const volume = 1.0;
-    const maxDuration = 3.0;
-
-    console.log("[SingingBowl] playSingingBowl called, type:", type, "ctx.state:", ctx.state, "bufferLoaded:", !!bellBuffer);
-
     if (ctx.state === "suspended") {
       ctx.resume();
     }
 
-    if (bellBuffer) {
-      // Play the pre-recorded bell, capped at 3 seconds
-      const now = ctx.currentTime;
-      const source = ctx.createBufferSource();
-      source.buffer = bellBuffer;
+    const isComplete = type === "complete";
+    const volume = isComplete ? 0.7 : 0.5;
+    const duration = isComplete ? 5.0 : 3.5;
+    const now = ctx.currentTime;
 
-      const gainNode = ctx.createGain();
-      gainNode.gain.setValueAtTime(volume, now);
-      // Fade out over the last 0.3s to avoid clicks
-      const fadeStart = Math.min(maxDuration, bellBuffer.duration) - 0.3;
-      if (fadeStart > 0) {
-        gainNode.gain.setValueAtTime(volume, now + fadeStart);
-        gainNode.gain.linearRampToValueAtTime(0, now + fadeStart + 0.3);
-      }
+    const master = ctx.createGain();
+    master.gain.setValueAtTime(volume, now);
+    master.gain.setValueAtTime(volume, now + 0.01);
+    master.gain.exponentialRampToValueAtTime(0.001, now + duration);
+    master.connect(ctx.destination);
 
-      source.connect(gainNode);
-      gainNode.connect(ctx.destination);
+    // Gong partials — low fundamental with rich inharmonic overtones
+    const partials = [
+      { freq: 65,    gain: 1.0,  decay: 1.0  },  // deep fundamental (C2)
+      { freq: 98,    gain: 0.7,  decay: 0.9  },  // low fifth
+      { freq: 130.8, gain: 0.5,  decay: 0.85 },  // octave
+      { freq: 164,   gain: 0.3,  decay: 0.7  },  // inharmonic overtone
+      { freq: 196,   gain: 0.25, decay: 0.65 },  // G3
+      { freq: 261.6, gain: 0.15, decay: 0.5  },  // C4 shimmer
+      { freq: 330,   gain: 0.08, decay: 0.4  },  // high shimmer
+    ];
 
-      source.start(now, 0, maxDuration);
-      console.log("[SingingBowl] Playing bell sound, volume:", volume, "duration:", maxDuration + "s");
-    } else {
-      // Fallback: synthesized tone if file hasn't loaded yet
-      console.log("[SingingBowl] Buffer not loaded, using synthesized fallback");
-      playSynthesizedBell(ctx, volume, maxDuration);
+    partials.forEach(({ freq, gain: g, decay }) => {
+      const osc = ctx.createOscillator();
+      const pGain = ctx.createGain();
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(freq, now);
+      // Slight pitch drift for organic feel
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.997, now + duration);
+
+      // Attack: quick fade in to avoid click
+      pGain.gain.setValueAtTime(0, now);
+      pGain.gain.linearRampToValueAtTime(g * volume, now + 0.008);
+      // Decay: each partial fades at its own rate
+      pGain.gain.exponentialRampToValueAtTime(0.001, now + duration * decay);
+
+      osc.connect(pGain);
+      pGain.connect(master);
+      osc.start(now);
+      osc.stop(now + duration + 0.1);
+    });
+
+    // Add subtle noise burst at attack for the "strike" transient
+    const noiseLen = 0.06;
+    const noiseBuffer = ctx.createBuffer(1, ctx.sampleRate * noiseLen, ctx.sampleRate);
+    const noiseData = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < noiseData.length; i++) {
+      noiseData[i] = (Math.random() * 2 - 1) * 0.3;
     }
+    const noiseSource = ctx.createBufferSource();
+    noiseSource.buffer = noiseBuffer;
+
+    // Bandpass filter the noise to sound like a mallet hit
+    const noiseFilter = ctx.createBiquadFilter();
+    noiseFilter.type = "bandpass";
+    noiseFilter.frequency.value = 200;
+    noiseFilter.Q.value = 1.5;
+
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(volume * 0.6, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, now + noiseLen);
+
+    noiseSource.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(master);
+    noiseSource.start(now);
+
   } catch (err) {
     console.warn("[SingingBowl] playback failed:", err);
   }
-}
-
-/**
- * Fallback synthesized bell if the WAV hasn't loaded.
- */
-function playSynthesizedBell(ctx, volume, duration) {
-  const now = ctx.currentTime;
-
-  const master = ctx.createGain();
-  master.gain.setValueAtTime(volume, now);
-  master.gain.exponentialRampToValueAtTime(0.001, now + duration);
-  master.connect(ctx.destination);
-
-  const partials = [
-    { freq: 261.63, gain: 1.0 },
-    { freq: 523.25, gain: 0.5 },
-    { freq: 783.99, gain: 0.2 },
-  ];
-
-  partials.forEach(({ freq, gain: g }) => {
-    const osc = ctx.createOscillator();
-    const pGain = ctx.createGain();
-    osc.type = "sine";
-    osc.frequency.setValueAtTime(freq, now);
-    osc.frequency.exponentialRampToValueAtTime(freq * 0.998, now + duration);
-    pGain.gain.setValueAtTime(g * volume, now);
-    pGain.gain.exponentialRampToValueAtTime(0.001, now + duration * 0.8);
-    osc.connect(pGain);
-    pGain.connect(master);
-    osc.start(now);
-    osc.stop(now + duration + 0.1);
-  });
 }
