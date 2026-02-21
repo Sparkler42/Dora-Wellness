@@ -53,6 +53,28 @@ export const intakeDescriptors = {
   "Imagination":
     "Imagination practices use your mind\u2019s eye as a wellness tool. Visualization, creative mental exploration, and guided imagery can shift your nervous system, reduce pain, and expand your sense of what\u2019s possible in your body and your life. No artistic ability required.",
 
+  // ── LIFE STAGE ─────────────────────────────────────────────
+  "\uD83C\uDF93 Diploma's still fresh, rent is not":
+    "You\u2019re in early adulthood \u2014 navigating independence, identity, and figuring out what your body actually needs now that no one\u2019s scheduling PE class for you. Spark meets you here with practices that build body awareness from the ground up.",
+  "\uD83D\uDD25 Fully in motion and full of questions":
+    "You\u2019re moving fast and asking big questions \u2014 about your body, your direction, your life. This is a rich time to start a somatic practice. What you build now creates the foundation for everything that follows.",
+  "\uD83C\uDF00 In the thick of it. What day is it again?":
+    "Life is full \u2014 probably overfull. You\u2019re managing multiple demands and your body often comes last on the list. Spark is designed for exactly this season: practices short enough to actually do, meaningful enough to matter.",
+  "\uD83D\uDD11 Peak career, peak mortgage, peak everything":
+    "You\u2019re at or near a peak of external demands. High output, high pressure, likely some accumulated physical tension you\u2019ve been meaning to address. This is when a somatic practice pays the biggest dividends.",
+  "\uD83D\uDE05 My body started sending memos I didn't ask for":
+    "Maybe it\u2019s a knee that didn\u2019t used to complain, a back that needs more recovery time, or a new awareness of what you\u2019re holding in your shoulders. Your body is asking for more attention. Spark is how you start listening.",
+  "\uD83E\uDDED Somewhere in the middle, closer to wise than confused":
+    "You\u2019ve moved through enough of life to know what matters and what doesn\u2019t. You\u2019re not chasing anything \u2014 you\u2019re refining. Spark\u2019s practices meet the depth and discernment you\u2019ve developed.",
+  "\uD83E\uDDB4 Things click when I stand up now":
+    "The body has its own timeline, and you\u2019re living it. What Spark offers at this stage is a practice of working with your body rather than against it \u2014 honoring what it\u2019s been through and discovering what it\u2019s still capable of.",
+  "\uD83D\uDCFC I remember when streaming meant a leaky pipe":
+    "You\u2019ve seen a lot of change and your body has carried you through all of it. Spark\u2019s practices at this stage are about deep listening, gentle restoration, and appreciating the extraordinary thing your body has done for you.",
+  "\uD83C\uDF15 In the fullness of things \u2014 experienced but not done":
+    "You bring decades of lived experience to this practice. Spark honors that \u2014 these aren\u2019t beginner exercises dressed up as wisdom. They\u2019re genuine tools for someone who knows themselves and wants to go deeper.",
+  "\uD83C\uDF42 Grateful for every season that got me here":
+    "This is the long view. You\u2019ve arrived somewhere real. Spark\u2019s practices at this stage are about presence, gratitude, and the quiet power of a body that has lived fully and wants to keep going.",
+
   // ── EXPERIENCE ──────────────────────────────────────────────
   "Brand new \u2014 I'm curious":
     "You\u2019re just starting to explore intentional movement or wellness practices. Welcome \u2014 this is the best place to start. Spark will meet you exactly where you are, with no assumptions and no judgment. Everything is designed to be accessible.",

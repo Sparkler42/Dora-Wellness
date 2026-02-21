@@ -1,6 +1,17 @@
 export const intakeQuestions = [
   { id: "name", q: "What should we call you?", tp: "text", ph: "Your first name" },
-  { id: "birthday", q: "When's your birthday?", tp: "date", ph: "MM/DD/YYYY" },
+  { id: "lifeStage", q: "Which of these feel like you? Pick up to three.", sub: "Not asking your age \u2014 asking how you carry it.", tp: "multi3", o: [
+    "\uD83C\uDF93 Diploma's still fresh, rent is not",
+    "\uD83D\uDD25 Fully in motion and full of questions",
+    "\uD83C\uDF00 In the thick of it. What day is it again?",
+    "\uD83D\uDD11 Peak career, peak mortgage, peak everything",
+    "\uD83D\uDE05 My body started sending memos I didn't ask for",
+    "\uD83E\uDDED Somewhere in the middle, closer to wise than confused",
+    "\uD83E\uDDB4 Things click when I stand up now",
+    "\uD83D\uDCFC I remember when streaming meant a leaky pipe",
+    "\uD83C\uDF15 In the fullness of things \u2014 experienced but not done",
+    "\uD83C\uDF42 Grateful for every season that got me here",
+  ] },
   { id: "experience", q: "How would you describe your movement experience?", tp: "choice", o: ["Brand new \u2014 I'm curious", "Some yoga or stretching", "Regular mover", "Advanced \u2014 years of practice"] },
   { id: "goals", q: "What draws you to Spark?", tp: "multi", o: ["Reduce pain or tension", "Build strength", "Improve flexibility", "Mental clarity", "Stress relief", "Better sleep", "Self-discovery", "Fun & play", "Body connection"] },
   { id: "bodyAreas", q: "Areas of your body to focus on?", tp: "multi", o: ["Feet & ankles", "Knees", "Hips & pelvis", "Lower back", "Core", "Shoulders", "Neck & jaw", "Whole body", "Nothing specific"] },

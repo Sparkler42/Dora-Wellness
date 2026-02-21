@@ -256,11 +256,19 @@ export default function IntakeFlow({ skipWelcome = false }) {
     const c = ans || [];
     setA(c.includes(o) ? c.filter((x) => x !== o) : [...c, o]);
   };
+  const toggleMulti3 = (o) => {
+    const c = ans || [];
+    if (c.includes(o)) {
+      setA(c.filter((x) => x !== o));
+    } else if (c.length < 3) {
+      setA([...c, o]);
+    }
+  };
 
   const ok =
     q.tp === "text"
       ? (ans || "").trim().length > 0
-      : q.tp === "multi"
+      : q.tp === "multi" || q.tp === "multi3"
         ? (ans || []).length > 0
         : !!ans;
 
@@ -287,9 +295,15 @@ export default function IntakeFlow({ skipWelcome = false }) {
         <p style={{ color: T.txL, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", margin: "0 0 8px" }}>
           {step + 1} of {intakeQuestions.length}
         </p>
-        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 28px", lineHeight: 1.3 }}>
+        <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 8px", lineHeight: 1.3 }}>
           {q.q}
         </h2>
+        {q.sub && (
+          <p style={{ color: T.txL, fontSize: 14, margin: "0 0 20px", lineHeight: 1.5, fontStyle: "italic" }}>
+            {q.sub}
+          </p>
+        )}
+        {!q.sub && <div style={{ height: 20 }} />}
 
         {q.tp === "text" && (
           <input
@@ -311,6 +325,44 @@ export default function IntakeFlow({ skipWelcome = false }) {
             style={{ width: "100%", padding: "16px 18px", borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, fontSize: 18, fontFamily: "'DM Sans'", color: T.tx, outline: "none", boxSizing: "border-box" }}
           />
         )}
+
+        {q.tp === "multi3" && (() => {
+          const selected = ans || [];
+          const atMax = selected.length >= 3;
+          return (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", maxHeight: "55vh", paddingRight: 2 }}>
+              {q.o.map((o) => {
+                const sel = selected.includes(o);
+                const emoji = o.slice(0, 2);
+                const text = o.slice(3);
+                return (
+                  <button
+                    key={o}
+                    onClick={() => toggleMulti3(o)}
+                    style={{
+                      padding: "14px 16px", borderRadius: 16,
+                      border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                      background: sel ? T.acG : T.bgC,
+                      textAlign: "left", cursor: sel || !atMax ? "pointer" : "default",
+                      fontFamily: "'DM Sans'", transition: "all 0.2s",
+                      display: "flex", alignItems: "center", gap: 14,
+                      opacity: !sel && atMax ? 0.45 : 1,
+                    }}
+                  >
+                    <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{emoji}</span>
+                    <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 400, flex: 1, lineHeight: 1.4 }}>{text}</span>
+                    <InfoButton option={o} onOpen={setDescriptor} />
+                  </button>
+                );
+              })}
+              {atMax && (
+                <p style={{ color: T.txL, fontSize: 13, textAlign: "center", margin: "4px 0 0", fontStyle: "italic" }}>
+                  You've picked 3 — that's your limit for this one
+                </p>
+              )}
+            </div>
+          );
+        })()}
 
         {q.tp === "choice" && (
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
