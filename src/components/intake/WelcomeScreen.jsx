@@ -198,36 +198,35 @@ export default function WelcomeScreen({ onStart }) {
         </div>
 
         {/* Cycling word — pronounced */}
-        <div style={{ marginBottom: 40, height: 42 }}>
-          <p
+        <div
+          style={{
+            marginBottom: 40,
+            height: 42,
+            opacity: phase >= 2 ? 1 : 0,
+            transform: phase >= 2 ? "none" : "translateY(20px)",
+            transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+          }}
+        >
+          <span
             style={{
+              display: "inline-block",
               fontFamily: "'DM Serif Display',serif",
               fontSize: 32,
-              margin: 0,
               letterSpacing: "2px",
               fontWeight: 400,
-              opacity: phase >= 2 ? 1 : 0,
-              transition: phase >= 2 ? "none" : "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
-              transform: phase >= 2 ? "none" : "translateY(100%)",
               background: `linear-gradient(90deg, ${T.acS}, #fff, ${T.acS})`,
               backgroundSize: "200% auto",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
               animation: phase >= 2 ? "shimmer 4s linear infinite" : "none",
+              opacity: wordFade ? 1 : 0,
+              transform: wordFade ? "translateY(0)" : "translateY(10px)",
+              transition: "opacity 0.4s ease, transform 0.4s ease",
             }}
           >
-            <span
-              style={{
-                display: "inline-block",
-                opacity: wordFade ? 1 : 0,
-                transform: wordFade ? "translateY(0)" : "translateY(10px)",
-                transition: "opacity 0.4s ease, transform 0.4s ease",
-              }}
-            >
-              {cycleWords[wordIdx]}
-            </span>
-          </p>
+            {cycleWords[wordIdx]}
+          </span>
         </div>
 
         {/* Divider line */}
