@@ -178,27 +178,50 @@ export default function WelcomeScreen({ onStart }) {
           </h1>
         </div>
 
-        {/* "Your ___" cycling word */}
-        <div style={{ overflow: "hidden", marginBottom: 40, height: 38 }}>
+        {/* "Your" — stationary */}
+        <div style={{ overflow: "hidden", marginBottom: 6 }}>
           <p
             style={{
               fontFamily: "'DM Serif Display',serif",
-              fontSize: 26,
-              color: T.txD,
+              fontSize: 22,
+              color: "rgba(240,236,230,0.5)",
               margin: 0,
-              letterSpacing: "2px",
+              letterSpacing: "3px",
               fontWeight: 400,
               opacity: phase >= 2 ? 1 : 0,
               transform: phase >= 2 ? "translateY(0)" : "translateY(100%)",
               transition: "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
             }}
           >
-            Your{" "}
+            Your
+          </p>
+        </div>
+
+        {/* Cycling word — pronounced */}
+        <div style={{ marginBottom: 40, height: 42 }}>
+          <p
+            style={{
+              fontFamily: "'DM Serif Display',serif",
+              fontSize: 32,
+              margin: 0,
+              letterSpacing: "2px",
+              fontWeight: 400,
+              opacity: phase >= 2 ? 1 : 0,
+              transition: phase >= 2 ? "none" : "all 0.9s cubic-bezier(0.16, 1, 0.3, 1)",
+              transform: phase >= 2 ? "none" : "translateY(100%)",
+              background: `linear-gradient(90deg, ${T.acS}, #fff, ${T.acS})`,
+              backgroundSize: "200% auto",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+              animation: phase >= 2 ? "shimmer 4s linear infinite" : "none",
+            }}
+          >
             <span
               style={{
                 display: "inline-block",
                 opacity: wordFade ? 1 : 0,
-                transform: wordFade ? "translateY(0)" : "translateY(8px)",
+                transform: wordFade ? "translateY(0)" : "translateY(10px)",
                 transition: "opacity 0.4s ease, transform 0.4s ease",
               }}
             >
