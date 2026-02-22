@@ -105,6 +105,7 @@ const branch3 = [
 const branch4 = [
   {
     q: "When did you first notice you needed to move more deliberately?",
+    tp: "multi3",
     o: [
       "\uD83C\uDFAF After a specific fall, injury, or health event",
       "\uD83D\uDCC5 Gradually over the past few years \u2014 no single moment",
@@ -127,6 +128,7 @@ const branch4 = [
   },
   {
     q: "Do you use any tools or supports currently?",
+    tp: "multi3",
     o: [
       "\uD83E\uDDAF Yes \u2014 a cane, walker, or similar support",
       "\uD83D\uDD90\uFE0F I use handrails and furniture as support",
