@@ -203,6 +203,18 @@ export default function IntakeFlow({ skipWelcome = false }) {
     );
   }
 
+  const exitMobility = () => {
+    // Store mobility answers and go to main app
+    const p = {
+      ...answers,
+      mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
+      mobilityFollowUp: mobilityFollowUp.filter(Boolean),
+      mobilityRedirectSeen,
+    };
+    setProfile(p);
+    setScreen("app");
+  };
+
   // --- Mobility Assessment Screens ---
   if (mobilityPhase) {
     const shell = (children) => (
@@ -587,18 +599,6 @@ export default function IntakeFlow({ skipWelcome = false }) {
       : q.tp === "multi" || q.tp === "multi3"
         ? (ans || []).length > 0
         : !!ans;
-
-  const exitMobility = () => {
-    // Store mobility answers and go to main app
-    const p = {
-      ...answers,
-      mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
-      mobilityFollowUp: mobilityFollowUp.filter(Boolean),
-      mobilityRedirectSeen,
-    };
-    setProfile(p);
-    setScreen("app");
-  };
 
   const next = () => {
     // Intercept after name (step 0) to enter mobility assessment
