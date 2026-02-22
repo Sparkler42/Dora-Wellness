@@ -392,13 +392,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
       };
 
       const skipFollowUp = () => {
-        // Clear answer for this question and advance
-        setFollowUpAns(null);
-        if (mobilityFollowUpStep < 2) {
-          setMobilityFollowUpStep((s) => s + 1);
-        } else {
-          exitMobility();
-        }
+        exitMobility();
       };
 
       return shell(
@@ -595,15 +589,15 @@ export default function IntakeFlow({ skipWelcome = false }) {
         : !!ans;
 
   const exitMobility = () => {
-    // Store mobility answers in the answers object
-    setAnswers((p) => ({
-      ...p,
+    // Store mobility answers and go to main app
+    const p = {
+      ...answers,
       mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
       mobilityFollowUp: mobilityFollowUp.filter(Boolean),
       mobilityRedirectSeen,
-    }));
-    setMobilityPhase(null);
-    setStep(1); // move to the next intake question after name
+    };
+    setProfile(p);
+    setScreen("app");
   };
 
   const next = () => {
