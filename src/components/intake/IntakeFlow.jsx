@@ -3,6 +3,7 @@ import Icon from "../ui/Icon";
 import { T } from "../../styles/tokens";
 import { intakeQuestions } from "../../data/intake-questions";
 import { intakeDescriptors } from "../../data/intakeDescriptors";
+import { balanceOptions, mobilityBranches } from "../../data/mobilityAssessment";
 import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
@@ -160,6 +161,14 @@ export default function IntakeFlow({ skipWelcome = false }) {
   const [showFork, setShowFork] = useState(false);
   const [descriptor, setDescriptor] = useState(null);
 
+  // Mobility assessment state
+  // phases: null, "welcome", "balance", "redirect", "followup"
+  const [mobilityPhase, setMobilityPhase] = useState(null);
+  const [mobilityBalance, setMobilityBalance] = useState(null); // index 0-4
+  const [mobilityFollowUp, setMobilityFollowUp] = useState([null, null, null]);
+  const [mobilityFollowUpStep, setMobilityFollowUpStep] = useState(0);
+  const [mobilityRedirectSeen, setMobilityRedirectSeen] = useState(false);
+
   const finishIntake = (goDeeper) => {
     const p = { ...answers };
     const nl = ["Very gently \u2014 minimal", "Balanced \u2014 a few daily", "Actively \u2014 keep me on track", "I'll come on my own"].indexOf(p.notifications);
@@ -192,6 +201,319 @@ export default function IntakeFlow({ skipWelcome = false }) {
         }}
       />
     );
+  }
+
+  // --- Mobility Assessment Screens ---
+  if (mobilityPhase) {
+    const shell = (children) => (
+      <div style={{ fontFamily: "'DM Sans',sans-serif", background: T.bg, minHeight: "100vh", maxWidth: 430, margin: "0 auto", display: "flex", flexDirection: "column" }}>
+        <div style={{ padding: "20px 22px 0" }}>
+          <h1 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 20px" }}>
+            <span style={{ color: T.ac }}>spark</span>
+          </h1>
+        </div>
+        {children}
+      </div>
+    );
+
+    // Screen A — Warm Welcome
+    if (mobilityPhase === "welcome") {
+      return shell(
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 20 }}>🌿</div>
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 26, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+            Welcome, {answers.name || "friend"}
+          </h2>
+          <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 8px", maxWidth: 340 }}>
+            Before we go further, we'd love to understand how your body moves through the world right now.
+          </p>
+          <p style={{ color: T.txL, fontSize: 14, lineHeight: 1.6, margin: "0 0 40px", maxWidth: 340, fontStyle: "italic" }}>
+            There are no wrong answers — this helps us meet you where you are.
+          </p>
+          <button
+            onClick={() => setMobilityPhase("balance")}
+            style={{
+              padding: "16px 48px", border: "none", borderRadius: 14,
+              background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+              color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+              fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.ac}30`,
+            }}
+          >
+            Next →
+          </button>
+          <div style={{ height: 60 }} />
+        </div>
+      );
+    }
+
+    // Screen B — Balance Question
+    if (mobilityPhase === "balance") {
+      return shell(
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column" }}>
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 8px", lineHeight: 1.3 }}>
+            How would you describe your balance and stability?
+          </h2>
+          <p style={{ color: T.txL, fontSize: 14, margin: "0 0 20px", lineHeight: 1.5, fontStyle: "italic" }}>
+            Pick the one that feels closest to your everyday experience.
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", flex: 1 }}>
+            {balanceOptions.map((o, i) => {
+              const sel = mobilityBalance === i;
+              const emoji = o.slice(0, 2);
+              const text = o.slice(3);
+              return (
+                <button
+                  key={i}
+                  onClick={() => setMobilityBalance(i)}
+                  style={{
+                    padding: "14px 16px", borderRadius: 16,
+                    border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                    background: sel ? T.acG : T.bgC,
+                    textAlign: "left", cursor: "pointer",
+                    fontFamily: "'DM Sans'", transition: "all 0.2s",
+                    display: "flex", alignItems: "center", gap: 14,
+                  }}
+                >
+                  <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{emoji}</span>
+                  <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 400, flex: 1, lineHeight: 1.4 }}>{text}</span>
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ padding: "20px 0 40px", display: "flex", gap: 12 }}>
+            <button
+              onClick={() => { setMobilityPhase("welcome"); setMobilityBalance(null); }}
+              style={{ width: 50, height: 50, borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon n="back" s={18} c={T.txM} />
+            </button>
+            <button
+              onClick={mobilityBalance !== null ? () => {
+                if (mobilityBalance === 4) {
+                  setMobilityPhase("redirect");
+                } else {
+                  setMobilityPhase("followup");
+                  setMobilityFollowUpStep(0);
+                }
+              } : undefined}
+              disabled={mobilityBalance === null}
+              style={{
+                flex: 1, padding: "15px", border: "none", borderRadius: 14,
+                background: mobilityBalance !== null ? `linear-gradient(135deg,${T.ac},${T.acS})` : T.bgW,
+                color: mobilityBalance !== null ? "#fff" : T.txL, fontSize: 16, fontWeight: 600,
+                cursor: mobilityBalance !== null ? "pointer" : "not-allowed", fontFamily: "'DM Sans'",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // Personal Connection Redirect (option 5 only)
+    if (mobilityPhase === "redirect") {
+      return shell(
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+          <div style={{ fontSize: 48, marginBottom: 20 }}>💛</div>
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+            We hear you, {answers.name || "friend"}.
+          </h2>
+          <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 12px", maxWidth: 340 }}>
+            Balance is something you navigate every day, and we want to make sure Spark truly supports you.
+          </p>
+          <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 24px", maxWidth: 340 }}>
+            Would you like to connect with us directly so we can understand your needs better?
+          </p>
+          <a
+            href="mailto:spark@dorawellness.com?subject=Personal%20Balance%20Support"
+            style={{
+              display: "inline-block", padding: "16px 40px", borderRadius: 14,
+              background: `linear-gradient(135deg, ${T.cl}, ${T.pl})`,
+              color: "#fff", fontSize: 16, fontWeight: 600, textDecoration: "none",
+              fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.pl}30`,
+              marginBottom: 20,
+            }}
+          >
+            Reach Out to Us
+          </a>
+          <button
+            onClick={() => {
+              setMobilityRedirectSeen(true);
+              setMobilityPhase("followup");
+              setMobilityFollowUpStep(0);
+            }}
+            style={{
+              background: "none", border: "none", color: T.txL, fontSize: 14,
+              cursor: "pointer", fontFamily: "'DM Sans'", padding: "8px 16px",
+              textDecoration: "underline", textUnderlineOffset: 3,
+            }}
+          >
+            Continue with the assessment →
+          </button>
+          <div style={{ height: 60 }} />
+        </div>
+      );
+    }
+
+    // Screen C — Follow-up Questions (3 per branch)
+    if (mobilityPhase === "followup") {
+      const branchIdx = mobilityBalance !== null ? mobilityBalance : 0;
+      const branch = mobilityBranches[branchIdx];
+      const fq = branch[mobilityFollowUpStep];
+      const fAns = mobilityFollowUp[mobilityFollowUpStep];
+      const isMulti3 = fq.tp === "multi3";
+
+      const setFollowUpAns = (v) => {
+        setMobilityFollowUp((prev) => {
+          const next = [...prev];
+          next[mobilityFollowUpStep] = v;
+          return next;
+        });
+      };
+
+      const toggleFollowUpMulti3 = (o) => {
+        const c = fAns || [];
+        if (c.includes(o)) {
+          setFollowUpAns(c.filter((x) => x !== o));
+        } else if (c.length < 3) {
+          setFollowUpAns([...c, o]);
+        }
+      };
+
+      const fOk = isMulti3 ? (fAns || []).length > 0 : !!fAns;
+
+      const advanceFollowUp = () => {
+        if (mobilityFollowUpStep < 2) {
+          setMobilityFollowUpStep((s) => s + 1);
+        } else {
+          exitMobility();
+        }
+      };
+
+      const skipFollowUp = () => {
+        // Clear answer for this question and advance
+        setFollowUpAns(null);
+        if (mobilityFollowUpStep < 2) {
+          setMobilityFollowUpStep((s) => s + 1);
+        } else {
+          exitMobility();
+        }
+      };
+
+      return shell(
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column" }}>
+          <p style={{ color: T.txL, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", margin: "0 0 8px" }}>
+            Follow-up {mobilityFollowUpStep + 1} of 3
+          </p>
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 20px", lineHeight: 1.3 }}>
+            {fq.q}
+          </h2>
+
+          {isMulti3 ? (() => {
+            const selected = fAns || [];
+            const atMax = selected.length >= 3;
+            return (
+              <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", maxHeight: "50vh", paddingRight: 2 }}>
+                {fq.o.map((o) => {
+                  const sel = selected.includes(o);
+                  const emoji = o.slice(0, 2);
+                  const text = o.slice(3);
+                  return (
+                    <button
+                      key={o}
+                      onClick={() => toggleFollowUpMulti3(o)}
+                      style={{
+                        padding: "14px 16px", borderRadius: 16,
+                        border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                        background: sel ? T.acG : T.bgC,
+                        textAlign: "left", cursor: sel || !atMax ? "pointer" : "default",
+                        fontFamily: "'DM Sans'", transition: "all 0.2s",
+                        display: "flex", alignItems: "center", gap: 14,
+                        opacity: !sel && atMax ? 0.45 : 1,
+                      }}
+                    >
+                      <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{emoji}</span>
+                      <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 400, flex: 1, lineHeight: 1.4 }}>{text}</span>
+                    </button>
+                  );
+                })}
+                {atMax && (
+                  <p style={{ color: T.txL, fontSize: 13, textAlign: "center", margin: "4px 0 0", fontStyle: "italic" }}>
+                    You've picked 3 — that's your limit for this one
+                  </p>
+                )}
+              </div>
+            );
+          })() : (
+            <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", flex: 1 }}>
+              {fq.o.map((o) => {
+                const sel = fAns === o;
+                const emoji = o.slice(0, 2);
+                const text = o.slice(3);
+                return (
+                  <button
+                    key={o}
+                    onClick={() => setFollowUpAns(o)}
+                    style={{
+                      padding: "14px 16px", borderRadius: 16,
+                      border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                      background: sel ? T.acG : T.bgC,
+                      textAlign: "left", cursor: "pointer",
+                      fontFamily: "'DM Sans'", transition: "all 0.2s",
+                      display: "flex", alignItems: "center", gap: 14,
+                    }}
+                  >
+                    <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{emoji}</span>
+                    <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 400, flex: 1, lineHeight: 1.4 }}>{text}</span>
+                  </button>
+                );
+              })}
+            </div>
+          )}
+
+          <div style={{ flex: 1 }} />
+
+          <div style={{ padding: "12px 0 8px", textAlign: "center" }}>
+            <button
+              onClick={skipFollowUp}
+              style={{
+                background: "none", border: "none", color: T.txL, fontSize: 14,
+                cursor: "pointer", fontFamily: "'DM Sans'", padding: "8px 16px",
+              }}
+            >
+              Skip for now →
+            </button>
+          </div>
+          <div style={{ padding: "0 0 40px", display: "flex", gap: 12 }}>
+            <button
+              onClick={() => {
+                if (mobilityFollowUpStep > 0) {
+                  setMobilityFollowUpStep((s) => s - 1);
+                } else {
+                  setMobilityPhase("balance");
+                }
+              }}
+              style={{ width: 50, height: 50, borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon n="back" s={18} c={T.txM} />
+            </button>
+            <button
+              onClick={fOk ? advanceFollowUp : undefined}
+              disabled={!fOk}
+              style={{
+                flex: 1, padding: "15px", border: "none", borderRadius: 14,
+                background: fOk ? `linear-gradient(135deg,${T.ac},${T.acS})` : T.bgW,
+                color: fOk ? "#fff" : T.txL, fontSize: 16, fontWeight: 600,
+                cursor: fOk ? "pointer" : "not-allowed", fontFamily: "'DM Sans'",
+              }}
+            >
+              {mobilityFollowUpStep === 2 ? "Finish Assessment" : "Continue"}
+            </button>
+          </div>
+        </div>
+      );
+    }
   }
 
   if (showFork) {
@@ -272,7 +594,24 @@ export default function IntakeFlow({ skipWelcome = false }) {
         ? (ans || []).length > 0
         : !!ans;
 
+  const exitMobility = () => {
+    // Store mobility answers in the answers object
+    setAnswers((p) => ({
+      ...p,
+      mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
+      mobilityFollowUp: mobilityFollowUp.filter(Boolean),
+      mobilityRedirectSeen,
+    }));
+    setMobilityPhase(null);
+    setStep(1); // move to the next intake question after name
+  };
+
   const next = () => {
+    // Intercept after name (step 0) to enter mobility assessment
+    if (step === 0 && mobilityPhase === null && mobilityBalance === null) {
+      setMobilityPhase("welcome");
+      return;
+    }
     if (step < intakeQuestions.length - 1) {
       setStep((s) => s + 1);
     } else {
