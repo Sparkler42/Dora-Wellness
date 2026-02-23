@@ -4,6 +4,7 @@ import { T } from "../../styles/tokens";
 import { intakeQuestions } from "../../data/intake-questions";
 import { intakeDescriptors } from "../../data/intakeDescriptors";
 import { balanceOptions, mobilityBranches } from "../../data/mobilityAssessment";
+import { functionalQuestions, getFitnessLabel, snapshotScreens } from "../../data/functionalAssessment";
 import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
@@ -155,7 +156,7 @@ function DescriptorOverlay({ descriptor, onClose }) {
 export default function IntakeFlow({ skipWelcome = false }) {
   const { setProfile, setScreen, setNotifs, setDiveDeeper, setTab, audioIntroSeen, setAudioIntroSeen } = useApp();
   const [showWelcome, setShowWelcome] = useState(!skipWelcome);
-  const [showAudioIntro, setShowAudioIntro] = useState(!skipWelcome && !audioIntroSeen);
+  const [showAudioIntro, setShowAudioIntro] = useState(!skipWelcome);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showFork, setShowFork] = useState(false);
@@ -168,6 +169,15 @@ export default function IntakeFlow({ skipWelcome = false }) {
   const [mobilityFollowUp, setMobilityFollowUp] = useState([null, null, null]);
   const [mobilityFollowUpStep, setMobilityFollowUpStep] = useState(0);
   const [mobilityRedirectSeen, setMobilityRedirectSeen] = useState(false);
+
+  // Functional assessment state (branches 1 & 2 only)
+  const funcOrder = [functionalQuestions.q4, functionalQuestions.q5a, functionalQuestions.q5b, functionalQuestions.q5c];
+  const [funcStep, setFuncStep] = useState(0); // 0-3
+  const [funcAnswers, setFuncAnswers] = useState([null, null, null, null]); // { index, score } per question
+  // Snapshot phases: null, "invitation", "breath", "movement", "balance_moment", "reflection"
+  const [snapshotPhase, setSnapshotPhase] = useState(null);
+  const [snapshotReflection, setSnapshotReflection] = useState(null);
+  const [breathCount, setBreathCount] = useState(0); // for breath animation
 
   const finishIntake = (goDeeper) => {
     const p = { ...answers };
@@ -203,13 +213,25 @@ export default function IntakeFlow({ skipWelcome = false }) {
     );
   }
 
+  const funcComposite = funcAnswers.reduce((s, v) => s + (v?.score || 0), 0);
+
   const exitMobility = () => {
-    // Store mobility answers and go to main app
+    // Store mobility + functional answers and go to main app
+    const fitnessLabel = funcComposite > 0 ? getFitnessLabel(funcComposite) : null;
     const p = {
       ...answers,
       mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
       mobilityFollowUp: mobilityFollowUp.filter(Boolean),
       mobilityRedirectSeen,
+      functionalScores: funcAnswers.some(Boolean) ? {
+        squatDepth: funcAnswers[0]?.score || null,
+        balance: funcAnswers[1]?.score || null,
+        stamina: funcAnswers[2]?.score || null,
+        strength: funcAnswers[3]?.score || null,
+        composite: funcComposite,
+      } : null,
+      fitnessLabel: fitnessLabel?.label || null,
+      snapshotReflection,
     };
     setProfile(p);
     setScreen("app");
@@ -395,22 +417,32 @@ export default function IntakeFlow({ skipWelcome = false }) {
 
       const fOk = isMulti3 ? (fAns || []).length > 0 : !!fAns;
 
-      const advanceFollowUp = () => {
-        if (mobilityFollowUpStep < 2) {
-          setMobilityFollowUpStep((s) => s + 1);
+      const enterFunctionalOrExit = () => {
+        if (mobilityBalance <= 1) {
+          // Branches 1 & 2 → functional assessment
+          setMobilityPhase("functional");
+          setFuncStep(0);
         } else {
           exitMobility();
         }
       };
 
+      const advanceFollowUp = () => {
+        if (mobilityFollowUpStep < 2) {
+          setMobilityFollowUpStep((s) => s + 1);
+        } else {
+          enterFunctionalOrExit();
+        }
+      };
+
       const skipFollowUp = () => {
-        exitMobility();
+        enterFunctionalOrExit();
       };
 
       return shell(
         <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column" }}>
           <p style={{ color: T.txL, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", margin: "0 0 8px" }}>
-            Follow-up {mobilityFollowUpStep + 1} of 3
+            {mobilityFollowUpStep + 1} of 3
           </p>
           <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 20px", lineHeight: 1.3 }}>
             {fq.q}
@@ -519,6 +551,309 @@ export default function IntakeFlow({ skipWelcome = false }) {
           </div>
         </div>
       );
+    }
+
+    // --- Functional Assessment Questions (branches 1 & 2) ---
+    if (mobilityPhase === "functional") {
+      const fq = funcOrder[funcStep];
+      const selected = funcAnswers[funcStep];
+
+      return shell(
+        <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column" }}>
+          <p style={{ color: T.txL, fontSize: 13, letterSpacing: "1.5px", textTransform: "uppercase", margin: "0 0 8px" }}>
+            {fq.counter}
+          </p>
+          <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 8px", lineHeight: 1.3 }}>
+            {fq.q}
+          </h2>
+          <p style={{ color: T.txL, fontSize: 14, margin: "0 0 20px", lineHeight: 1.5, fontStyle: "italic" }}>
+            {fq.sub}
+          </p>
+          <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", flex: 1 }}>
+            {fq.options.map((opt, idx) => {
+              const sel = selected !== null && selected?.index === idx;
+              return (
+                <button
+                  key={opt.label}
+                  onClick={() => {
+                    setFuncAnswers((prev) => {
+                      const next = [...prev];
+                      next[funcStep] = { index: idx, score: opt.score };
+                      return next;
+                    });
+                  }}
+                  style={{
+                    padding: "14px 16px", borderRadius: 16,
+                    border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                    background: sel ? T.acG : T.bgC,
+                    textAlign: "left", cursor: "pointer",
+                    fontFamily: "'DM Sans'", transition: "all 0.2s",
+                    display: "flex", alignItems: "flex-start", gap: 14,
+                  }}
+                >
+                  <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{opt.emoji}</span>
+                  <div style={{ flex: 1 }}>
+                    <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 500, lineHeight: 1.4, display: "block" }}>{opt.label}</span>
+                    <span style={{ fontSize: 13, color: T.txL, lineHeight: 1.5, display: "block", marginTop: 4 }}>{opt.detail}</span>
+                  </div>
+                </button>
+              );
+            })}
+          </div>
+          <div style={{ padding: "12px 0 8px", textAlign: "center" }}>
+            <button
+              onClick={exitMobility}
+              style={{ background: "none", border: "none", color: T.txL, fontSize: 14, cursor: "pointer", fontFamily: "'DM Sans'", padding: "8px 16px" }}
+            >
+              Skip for now →
+            </button>
+          </div>
+          <div style={{ padding: "0 0 40px", display: "flex", gap: 12 }}>
+            <button
+              onClick={() => {
+                if (funcStep > 0) {
+                  setFuncStep((s) => s - 1);
+                } else {
+                  setMobilityPhase("followup");
+                  setMobilityFollowUpStep(2);
+                }
+              }}
+              style={{ width: 50, height: 50, borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}
+            >
+              <Icon n="back" s={18} c={T.txM} />
+            </button>
+            <button
+              onClick={selected ? () => {
+                if (funcStep < 3) {
+                  setFuncStep((s) => s + 1);
+                } else {
+                  setSnapshotPhase("invitation");
+                  setMobilityPhase("snapshot");
+                }
+              } : undefined}
+              disabled={!selected}
+              style={{
+                flex: 1, padding: "15px", border: "none", borderRadius: 14,
+                background: selected ? `linear-gradient(135deg,${T.ac},${T.acS})` : T.bgW,
+                color: selected ? "#fff" : T.txL, fontSize: 16, fontWeight: 600,
+                cursor: selected ? "pointer" : "not-allowed", fontFamily: "'DM Sans'",
+              }}
+            >
+              Continue
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    // --- Snapshot Experience (after functional questions) ---
+    if (mobilityPhase === "snapshot") {
+      const composite = funcComposite;
+      const movementLevel = composite >= 10 ? "high" : composite >= 6 ? "mid" : "low";
+      const ss = snapshotScreens;
+
+      // Invitation
+      if (snapshotPhase === "invitation") {
+        return shell(
+          <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 20 }}>✨</div>
+            <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+              {ss.invitation.heading}
+            </h2>
+            <p style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 12px", maxWidth: 340 }}>
+              {ss.invitation.body}
+            </p>
+            <p style={{ color: T.txL, fontSize: 13, lineHeight: 1.5, margin: "0 0 32px", maxWidth: 320, fontStyle: "italic" }}>
+              {ss.invitation.note}
+            </p>
+            <button
+              onClick={() => setSnapshotPhase("breath")}
+              style={{
+                padding: "16px 48px", border: "none", borderRadius: 14,
+                background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.ac}30`,
+                marginBottom: 16,
+              }}
+            >
+              {ss.invitation.cta}
+            </button>
+            <button
+              onClick={exitMobility}
+              style={{ background: "none", border: "none", color: T.txL, fontSize: 14, cursor: "pointer", fontFamily: "'DM Sans'", padding: "8px 16px" }}
+            >
+              {ss.invitation.skip}
+            </button>
+          </div>
+        );
+      }
+
+      // Breath Reset
+      if (snapshotPhase === "breath") {
+        return shell(
+          <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+            <style>{`
+              @keyframes breathPulse {
+                0%, 100% { transform: scale(1); opacity: 0.4; }
+                40% { transform: scale(1.4); opacity: 0.8; }
+              }
+            `}</style>
+            <div style={{
+              width: 120, height: 120, borderRadius: "50%",
+              background: `radial-gradient(circle, ${T.sg}40, ${T.sg}10)`,
+              display: "flex", alignItems: "center", justifyContent: "center",
+              marginBottom: 28,
+              animation: "breathPulse 10s ease-in-out infinite",
+            }}>
+              <div style={{
+                width: 60, height: 60, borderRadius: "50%",
+                background: `radial-gradient(circle, ${T.sg}80, ${T.sg}30)`,
+              }} />
+            </div>
+            <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+              {ss.breathReset.heading}
+            </h2>
+            {ss.breathReset.body.map((line, i) => (
+              <p key={i} style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 12px", maxWidth: 340 }}>
+                {line}
+              </p>
+            ))}
+            <p style={{ color: T.txL, fontSize: 13, margin: "8px 0 28px", fontStyle: "italic" }}>
+              {ss.breathReset.note}
+            </p>
+            <button
+              onClick={() => setSnapshotPhase("movement")}
+              style={{
+                padding: "16px 48px", border: "none", borderRadius: 14,
+                background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.ac}30`,
+              }}
+            >
+              I'm ready →
+            </button>
+          </div>
+        );
+      }
+
+      // Movement Screen (adaptive by composite score)
+      if (snapshotPhase === "movement") {
+        const mv = ss.movement[movementLevel];
+        return shell(
+          <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 20 }}>🧍</div>
+            <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+              {mv.heading}
+            </h2>
+            {mv.body.map((line, i) => (
+              <p key={i} style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 12px", maxWidth: 360, textAlign: "left" }}>
+                {line}
+              </p>
+            ))}
+            <div style={{ height: 20 }} />
+            <button
+              onClick={() => setSnapshotPhase("balance_moment")}
+              style={{
+                padding: "16px 48px", border: "none", borderRadius: 14,
+                background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.ac}30`,
+              }}
+            >
+              Done — next →
+            </button>
+          </div>
+        );
+      }
+
+      // Balance Moment
+      if (snapshotPhase === "balance_moment") {
+        return shell(
+          <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center", textAlign: "center" }}>
+            <div style={{ fontSize: 48, marginBottom: 20 }}>⚖️</div>
+            <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 14px", lineHeight: 1.3 }}>
+              {ss.balanceMoment.heading}
+            </h2>
+            {ss.balanceMoment.body.map((line, i) => (
+              <p key={i} style={{ color: T.txM, fontSize: 15, lineHeight: 1.7, margin: "0 0 12px", maxWidth: 360, textAlign: "left" }}>
+                {line}
+              </p>
+            ))}
+            <p style={{ color: T.txL, fontSize: 13, margin: "8px 0 28px", fontStyle: "italic", maxWidth: 340 }}>
+              {ss.balanceMoment.note}
+            </p>
+            <button
+              onClick={() => setSnapshotPhase("reflection")}
+              style={{
+                padding: "16px 48px", border: "none", borderRadius: 14,
+                background: `linear-gradient(135deg,${T.ac},${T.acS})`,
+                color: "#fff", fontSize: 17, fontWeight: 600, cursor: "pointer",
+                fontFamily: "'DM Sans'", boxShadow: `0 4px 16px ${T.ac}30`,
+              }}
+            >
+              Done — let me reflect →
+            </button>
+          </div>
+        );
+      }
+
+      // Reflection
+      if (snapshotPhase === "reflection") {
+        const fitnessResult = getFitnessLabel(composite);
+        return shell(
+          <div style={{ flex: 1, padding: "0 22px", display: "flex", flexDirection: "column" }}>
+            <div style={{ textAlign: "center", marginBottom: 8 }}>
+              <div style={{ fontSize: 48, marginBottom: 12 }}>{fitnessResult.emoji}</div>
+              <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 6px", lineHeight: 1.3 }}>
+                {ss.reflection.heading}
+              </h2>
+              <p style={{ color: T.ac, fontSize: 16, fontWeight: 600, margin: "0 0 4px" }}>{fitnessResult.label}</p>
+              <p style={{ color: T.txL, fontSize: 14, margin: "0 0 20px", lineHeight: 1.5, fontStyle: "italic" }}>{fitnessResult.sub}</p>
+            </div>
+            <p style={{ color: T.txM, fontSize: 15, margin: "0 0 16px", textAlign: "center" }}>
+              {ss.reflection.prompt}
+            </p>
+            <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+              {ss.reflection.options.map((opt) => {
+                const sel = snapshotReflection === opt.value;
+                return (
+                  <button
+                    key={opt.value}
+                    onClick={() => setSnapshotReflection(opt.value)}
+                    style={{
+                      padding: "14px 16px", borderRadius: 16,
+                      border: sel ? `2px solid ${T.ac}` : `1.5px solid ${T.bgW}`,
+                      background: sel ? T.acG : T.bgC,
+                      textAlign: "left", cursor: "pointer",
+                      fontFamily: "'DM Sans'", transition: "all 0.2s",
+                      display: "flex", alignItems: "center", gap: 14,
+                    }}
+                  >
+                    <span style={{ fontSize: 26, lineHeight: 1, flexShrink: 0 }}>{opt.emoji}</span>
+                    <span style={{ fontSize: 14, color: sel ? T.ac : T.tx, fontWeight: sel ? 600 : 400, flex: 1, lineHeight: 1.4 }}>{opt.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+            <div style={{ flex: 1 }} />
+            <div style={{ padding: "20px 0 40px" }}>
+              <button
+                onClick={snapshotReflection ? exitMobility : undefined}
+                disabled={!snapshotReflection}
+                style={{
+                  width: "100%", padding: "16px", border: "none", borderRadius: 14,
+                  background: snapshotReflection ? `linear-gradient(135deg,${T.ac},${T.acS})` : T.bgW,
+                  color: snapshotReflection ? "#fff" : T.txL, fontSize: 17, fontWeight: 600,
+                  cursor: snapshotReflection ? "pointer" : "not-allowed", fontFamily: "'DM Sans'",
+                  boxShadow: snapshotReflection ? `0 4px 16px ${T.ac}30` : "none",
+                }}
+              >
+                Finish & Start My Practice
+              </button>
+            </div>
+          </div>
+        );
+      }
     }
   }
 
