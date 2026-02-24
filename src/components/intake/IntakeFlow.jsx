@@ -293,8 +293,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
           <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", flex: 1 }}>
             {balanceOptions.map((o, i) => {
               const sel = mobilityBalance === i;
-              const emoji = o.slice(0, 2);
-              const text = o.slice(3);
+              const spIdx = o.indexOf(" ");
+              const emoji = o.slice(0, spIdx);
+              const text = o.slice(spIdx + 1);
               return (
                 <button
                   key={i}
@@ -455,8 +456,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", maxHeight: "50vh", paddingRight: 2 }}>
                 {fq.o.map((o) => {
                   const sel = selected.includes(o);
-                  const emoji = o.slice(0, 2);
-                  const text = o.slice(3);
+                  const spIdx = o.indexOf(" ");
+                  const emoji = o.slice(0, spIdx);
+                  const text = o.slice(spIdx + 1);
                   return (
                     <button
                       key={o}
@@ -487,8 +489,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", flex: 1 }}>
               {fq.o.map((o) => {
                 const sel = fAns === o;
-                const emoji = o.slice(0, 2);
-                const text = o.slice(3);
+                const spIdx = o.indexOf(" ");
+                const emoji = o.slice(0, spIdx);
+                const text = o.slice(spIdx + 1);
                 return (
                   <button
                     key={o}
@@ -1001,8 +1004,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 8, overflowY: "auto", maxHeight: "55vh", paddingRight: 2 }}>
               {q.o.map((o) => {
                 const sel = selected.includes(o);
-                const emoji = o.slice(0, 2);
-                const text = o.slice(3);
+                const spIdx = o.indexOf(" ");
+                const emoji = o.slice(0, spIdx);
+                const text = o.slice(spIdx + 1);
                 return (
                   <button
                     key={o}
