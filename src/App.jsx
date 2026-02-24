@@ -5,6 +5,9 @@ import Icon from "./components/ui/Icon";
 import Orb from "./components/ui/Orb";
 import SectionHeader from "./components/ui/SectionHeader";
 import IntakeFlow from "./components/intake/IntakeFlow";
+import ExtendedIntakeFlow from "./components/intake/ExtendedIntakeFlow";
+import ExtendedWrapUp from "./components/intake/ExtendedWrapUp";
+import PrivateSessionsScreen from "./components/PrivateSessionsScreen";
 import ExerciseCard from "./components/exercises/ExerciseCard";
 import ExerciseDetail from "./components/exercises/ExerciseDetail";
 import ExerciseRunner from "./components/exercises/ExerciseRunner";
@@ -353,7 +356,8 @@ CONTEXT: Activity: ${sensorContext?.activity?.type || "unknown"}, Location: ${se
 
 // ═══ PROFILE TAB ══════════════════════════════════════════════
 function ProfileTab() {
-  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory, contextSensors, diveDeeper, setDiveDeeper } = useApp();
+  const { profile, streak, doneToday, doneAll, tier, setModal, setScreen, medicalHistory, contextSensors, diveDeeper, setDiveDeeper, showPrivateSessionReminder, setShowPrivateSessionReminder, privateSessionReminderDismissedAt, setPrivateSessionReminderDismissedAt } = useApp();
+  const [reminderDismissed, setReminderDismissed] = useState(false);
 
   useEffect(() => {
     if (diveDeeper.scrollTo) {
@@ -411,6 +415,60 @@ function ProfileTab() {
 
       <DiveDeeper />
 
+      {/* Private Session Reminder */}
+      {(() => {
+        if (!showPrivateSessionReminder || reminderDismissed) return null;
+        // Check 14-day dismiss cooldown
+        if (privateSessionReminderDismissedAt) {
+          const dismissed = new Date(privateSessionReminderDismissedAt);
+          const now = new Date();
+          const daysSince = (now - dismissed) / (1000 * 60 * 60 * 24);
+          if (daysSince < 14) return null;
+        }
+        return (
+          <div style={{
+            background: `${T.cl}10`, borderRadius: 18, padding: "18px 16px",
+            marginTop: 16, position: "relative", border: `1px solid ${T.cl}15`,
+          }}>
+            <button
+              onClick={() => {
+                setReminderDismissed(true);
+                setPrivateSessionReminderDismissedAt(new Date().toISOString());
+              }}
+              style={{
+                position: "absolute", top: 10, right: 10,
+                width: 24, height: 24, borderRadius: "50%",
+                border: "none", background: T.bgW, color: T.txL,
+                fontSize: 14, cursor: "pointer", display: "flex",
+                alignItems: "center", justifyContent: "center",
+                fontFamily: "'DM Sans'", lineHeight: 1,
+              }}
+            >
+              ✕
+            </button>
+            <div style={{ display: "flex", alignItems: "flex-start", gap: 12, paddingRight: 20 }}>
+              <span style={{ fontSize: 22, lineHeight: 1, flexShrink: 0, marginTop: 2 }}>🌿</span>
+              <div>
+                <p style={{ color: T.txM, fontSize: 14, lineHeight: 1.6, margin: "0 0 10px" }}>
+                  Your invitation to work with David or Caroline is still open, whenever you're ready.
+                </p>
+                <button
+                  onClick={() => setScreen("privateSessions")}
+                  style={{
+                    background: "none", border: "none", color: T.cl,
+                    fontSize: 13, fontWeight: 600, cursor: "pointer",
+                    fontFamily: "'DM Sans'", padding: 0,
+                    textDecoration: "underline", textUnderlineOffset: 3,
+                  }}
+                >
+                  Learn more
+                </button>
+              </div>
+            </div>
+          </div>
+        );
+      })()}
+
       <div style={{ background: T.bgD, borderRadius: 20, padding: "22px 20px", marginTop: 20, position: "relative", overflow: "hidden" }}>
         <Orb color={T.ac} sz="80px" top="-20px" left="-10px" d={2} />
         <div style={{ position: "relative", zIndex: 1 }}>
@@ -441,16 +499,73 @@ export default function App() {
   const {
     screen, setScreen, tab, setTab, modal, setModal,
     tier, setTier, completeExercise,
+    profile, setExtendedProfile, htPath, setHtPath,
+    setShowPrivateSessionReminder, setDiveDeeper,
   } = useApp();
   const [runningExercise, setRunningExercise] = useState(null);
+  const [wrapUpHtPath, setWrapUpHtPath] = useState(null);
 
   const sensorContext = useContextualSensors();
   const { currentSuggestion, acceptSuggestion, dismissSuggestion } = useSuggestions(sensorContext);
+
+  const goToForYou = () => {
+    setTab("home");
+    setScreen("app");
+  };
+
+  const goToPrivateSessions = () => {
+    setScreen("privateSessions");
+  };
 
   // Show intake flow
   if (screen === "intake") return <IntakeFlow />;
   if (screen === "retake") return <IntakeFlow skipWelcome />;
   if (screen === "medical") return <MedicalHistory onBack={() => setScreen("app")} />;
+
+  if (screen === "extendedIntake") {
+    return (
+      <ExtendedIntakeFlow
+        onComplete={(answers, path) => {
+          setExtendedProfile(answers);
+          setHtPath(path);
+          setDiveDeeper((prev) => ({
+            ...prev,
+            extendedCompleted: true,
+            extendedAnswers: answers,
+            highTouchScore: 0,
+            highTouchPath: path,
+          }));
+          if (path === "redirect") {
+            setShowPrivateSessionReminder(true);
+          }
+          setWrapUpHtPath(path);
+          setScreen("extendedWrapUp");
+        }}
+        onSkip={goToForYou}
+      />
+    );
+  }
+
+  if (screen === "extendedWrapUp") {
+    const pathToShow = wrapUpHtPath || htPath || "standard";
+    return (
+      <ExtendedWrapUp
+        htPath={pathToShow}
+        userName={profile?.name}
+        onGoToPractice={goToForYou}
+        onLearnAboutSessions={goToPrivateSessions}
+      />
+    );
+  }
+
+  if (screen === "privateSessions") {
+    return (
+      <PrivateSessionsScreen
+        onBack={() => setScreen("extendedWrapUp")}
+        onGoToPractice={goToForYou}
+      />
+    );
+  }
 
   const startExercise = (ex) => {
     setRunningExercise(ex);

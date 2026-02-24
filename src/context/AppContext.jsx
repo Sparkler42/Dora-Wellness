@@ -60,8 +60,12 @@ export function AppProvider({ children }) {
     stepResetDate: new Date().toISOString().slice(0, 10),
   });
   const [suggestionHistory, setSuggestionHistory] = useState(saved?.suggestionHistory || []);
-  const [diveDeeper, setDiveDeeper] = useState(saved?.diveDeeper || { started: false, sections: {} });
+  const [diveDeeper, setDiveDeeper] = useState(saved?.diveDeeper || { started: false, sections: {}, extendedCompleted: false, extendedAnswers: {}, highTouchScore: 0, highTouchPath: "standard" });
   const [audioIntroSeen, setAudioIntroSeen] = useState(saved?.audioIntroSeen || false);
+  const [extendedProfile, setExtendedProfile] = useState(saved?.extendedProfile || null);
+  const [htPath, setHtPath] = useState(saved?.htPath || null);
+  const [showPrivateSessionReminder, setShowPrivateSessionReminder] = useState(saved?.showPrivateSessionReminder || false);
+  const [privateSessionReminderDismissedAt, setPrivateSessionReminderDismissedAt] = useState(saved?.privateSessionReminderDismissedAt || null);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => setMounted(true), []);
@@ -69,8 +73,8 @@ export function AppProvider({ children }) {
   // Persist on every state change
   useEffect(() => {
     if (!mounted) return;
-    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, tab });
-  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, tab, mounted]);
+    save({ profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, extendedProfile, htPath, showPrivateSessionReminder, privateSessionReminderDismissedAt, tab });
+  }, [profile, tier, doneToday, doneAll, streak, notifs, journal, medicalHistory, deviceUsage, contextSensors, suggestionHistory, diveDeeper, audioIntroSeen, extendedProfile, htPath, showPrivateSessionReminder, privateSessionReminderDismissedAt, tab, mounted]);
 
   const completeExercise = (id) => {
     if (!doneToday.includes(id)) {
@@ -97,6 +101,10 @@ export function AppProvider({ children }) {
     suggestionHistory, setSuggestionHistory,
     diveDeeper, setDiveDeeper,
     audioIntroSeen, setAudioIntroSeen,
+    extendedProfile, setExtendedProfile,
+    htPath, setHtPath,
+    showPrivateSessionReminder, setShowPrivateSessionReminder,
+    privateSessionReminderDismissedAt, setPrivateSessionReminderDismissedAt,
     mounted,
     completeExercise,
   };

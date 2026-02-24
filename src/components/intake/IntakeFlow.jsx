@@ -192,8 +192,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
     );
     setProfile(p);
     if (goDeeper) {
-      setDiveDeeper((prev) => ({ ...prev, started: true, scrollTo: true }));
-      setTab("profile");
+      setDiveDeeper((prev) => ({ ...prev, started: true }));
+      setScreen("extendedIntake");
+      return;
     }
     setScreen("app");
   };
