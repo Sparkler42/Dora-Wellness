@@ -77,7 +77,7 @@ export const EX = {
   },
   somatic: {
     id: "somatic", cat: "body", title: "Somatic Release", sub: "Candlelight practice", dur: 1200, color: T.pl, icon: "lotus",
-    desc: "Self-massage and gentle somatic movement to release tension and refine body awareness. Caroline\u2019s signature restorative practice.",
+    desc: "Self-massage and gentle somatic movement to release tension and refine body awareness. A signature restorative practice.",
     steps: [
       { n: "Settling In", d: 120, t: "Comfortable position \u2014 lying down is ideal. Light a candle if you have one. Three slow breaths, each exhale twice as long as inhale. Give your nervous system permission to downshift." },
       { n: "Jaw & Face Release", d: 120, t: "Fingertips on jaw muscles. Small circles. Let jaw drop open. Massage temples, ridge above eyes, behind ears. Let your face go slack. We hold enormous tension here." },

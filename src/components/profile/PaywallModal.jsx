@@ -13,7 +13,7 @@ export default function PaywallModal({ onClose, onSelect }) {
         Deepen Your Practice
       </h2>
       <p style={{ color: "rgba(240,236,230,0.6)", fontSize: 14, textAlign: "center", margin: "0 0 28px", lineHeight: 1.5 }}>
-        From guided sessions to private work with David & Caroline
+        From guided sessions to private work with David
       </p>
       <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
         {tiers.map((t, i) => (

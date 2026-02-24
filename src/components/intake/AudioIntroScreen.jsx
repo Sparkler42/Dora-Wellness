@@ -141,7 +141,7 @@ export default function AudioIntroScreen({ onContinue }) {
             animation: "fade-in-up 0.8s ease both",
           }}
         >
-          A word from David & Caroline
+          A word from David
         </h2>
 
         {/* Subtitle */}

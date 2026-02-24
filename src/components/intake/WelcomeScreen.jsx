@@ -312,7 +312,7 @@ export default function WelcomeScreen({ onStart }) {
         }}
       >
         <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 11, color: "rgba(240,236,230,0.25)", letterSpacing: "1.5px", textTransform: "uppercase", margin: 0 }}>
-          David Moll & Caroline Dunham
+          David Moll
         </p>
         <p style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 10, color: "rgba(240,236,230,0.18)", marginTop: 4 }}>
           Ukiah, California

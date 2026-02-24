@@ -109,7 +109,7 @@ function HomeTab({ sensorContext, suggestion, onAcceptSuggestion, onDismissSugge
       >
         <div>
           <h4 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 16, color: T.tx, margin: "0 0 3px" }}>Deepen your practice</h4>
-          <p style={{ color: T.txL, fontSize: 13, margin: 0 }}>Private sessions with David & Caroline</p>
+          <p style={{ color: T.txL, fontSize: 13, margin: 0 }}>Private sessions with David</p>
         </div>
         <Icon n="arrow" s={20} c={T.ac} />
       </div>
@@ -259,7 +259,7 @@ function ChatTab({ sensorContext }) {
         </div>
         <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 24, color: T.tx, margin: "0 0 8px" }}>AI Wellness Guide</h2>
         <p style={{ color: T.txL, fontSize: 14, margin: "0 0 24px", lineHeight: 1.6, maxWidth: 300 }}>
-          A personalized AI guide trained in David & Caroline's philosophy, with access to your practice metrics and goals.
+          A personalized AI guide trained in David's philosophy, with access to your practice metrics and goals.
         </p>
         <button onClick={() => setModal({ t: "pay" })} style={{ padding: "14px 32px", border: "none", borderRadius: 14, background: `linear-gradient(135deg,${T.ac},${T.acS})`, color: "#fff", fontSize: 15, fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans'" }}>
           Unlock with Embody Deep
@@ -276,9 +276,9 @@ function ChatTab({ sensorContext }) {
     setLoading(true);
     try {
       const p = profile || {};
-      const sys = `You are the Spark AI guide, by David Moll and Caroline Dunham. You support users in movement, attention, and wellbeing practice.
+      const sys = `You are the Spark AI guide, by David Moll. You support users in movement, attention, and wellbeing practice.
 PHILOSOPHY: "Putting attention on expanding what feels good is the starting place toward healing." Active stretching integrates interested attention with physical engagement. Distinguish nerve sensation (electric, zingy) from muscle/fascia stretch (broad, warm). Self-care is responsive, not formulaic. Attention is the master skill. Movement should be playful and curious.
-You have the user's profile and metrics. Give personalized recommendations. Be warm, embodied, direct. 2-4 paragraphs max. Reference David and Caroline's teachings naturally. Suggest specific exercises when relevant.
+You have the user's profile and metrics. Give personalized recommendations. Be warm, embodied, direct. 2-4 paragraphs max. Reference David's teachings naturally. Suggest specific exercises when relevant.
 Available exercises: yoga, stretch, strength, barefoot, somatic, nutrition, meditation, attention, sensory, memory, selfaware, imagine, pleasure, playful, creative, sensual.
 USER: ${p.name || "User"}, Life stage: ${(p.lifeStage || []).join(", ") || "?"}, Experience: ${p.experience || "?"}, Goals: ${(p.goals || []).join(", ") || "none"}, Focus: ${(p.bodyAreas || []).join(", ") || "none"}, Mind: ${(p.mindInterest || []).join(", ") || "none"}, Time: ${p.timeAvail || "?"}, When: ${p.timeOfDay || "?"}.
 METRICS: Tier: ${tier}, Streak: ${streak}, Today: ${doneToday.length} (${doneToday.join(",") || "none"}), Total: ${doneAll.length}.
@@ -301,7 +301,7 @@ CONTEXT: Activity: ${sensorContext?.activity?.type || "unknown"}, Location: ${se
   return (
     <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 140px)" }}>
       <h2 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 22, color: T.tx, margin: "0 0 4px" }}>Wellness Guide</h2>
-      <p style={{ color: T.txL, fontSize: 13, margin: "0 0 12px" }}>Trained in David & Caroline's philosophy · Sees your practice data</p>
+      <p style={{ color: T.txL, fontSize: 13, margin: "0 0 12px" }}>Trained in David's philosophy · Sees your practice data</p>
       <div style={{ flex: 1, overflowY: "auto", display: "flex", flexDirection: "column", gap: 12, paddingBottom: 10 }}>
         {msgs.length === 0 && (
           <div style={{ background: T.ocG, borderRadius: 16, padding: 18, marginTop: 10 }}>
@@ -416,7 +416,7 @@ function ProfileTab() {
         <div style={{ position: "relative", zIndex: 1 }}>
           <h3 style={{ fontFamily: "'DM Serif Display',serif", fontSize: 18, color: T.txD, margin: "0 0 10px" }}>About Spark</h3>
           <p style={{ color: "rgba(240,236,230,0.7)", fontSize: 14, lineHeight: 1.6, margin: "0 0 10px" }}>
-            Founded by David Moll and Caroline Dunham in Ukiah, California. Over three decades of combined experience in bodywork, yoga, and functional movement.
+            Founded by David Moll in Ukiah, California. Over three decades of experience in bodywork, yoga, and functional movement.
           </p>
           <p style={{ color: "rgba(240,236,230,0.5)", fontSize: 13, margin: 0, fontStyle: "italic" }}>&ldquo;You are already doing it right.&rdquo;</p>
         </div>
