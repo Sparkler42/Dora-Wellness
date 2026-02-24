@@ -217,10 +217,10 @@ export default function IntakeFlow({ skipWelcome = false }) {
   const funcComposite = funcAnswers.reduce((s, v) => s + (v?.score || 0), 0);
 
   const exitMobility = () => {
-    // Store mobility + functional answers and go to main app
+    // Store mobility + functional answers into local answers, then show fork
     const fitnessLabel = funcComposite > 0 ? getFitnessLabel(funcComposite) : null;
-    const p = {
-      ...answers,
+    setAnswers((prev) => ({
+      ...prev,
       mobilityBalance: mobilityBalance !== null ? balanceOptions[mobilityBalance] : null,
       mobilityFollowUp: mobilityFollowUp.filter(Boolean),
       mobilityRedirectSeen,
@@ -233,9 +233,9 @@ export default function IntakeFlow({ skipWelcome = false }) {
       } : null,
       fitnessLabel: fitnessLabel?.label || null,
       snapshotReflection,
-    };
-    setProfile(p);
-    setScreen("app");
+    }));
+    setMobilityPhase(null);
+    setShowFork(true);
   };
 
   // --- Mobility Assessment Screens ---
