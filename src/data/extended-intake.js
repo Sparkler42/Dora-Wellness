@@ -8,6 +8,11 @@ export const EXTENDED_INTAKE_SECTIONS = [
     emoji: "🌿",
     header: "Let's talk about your body",
     subtext: "Not to fix it — to understand it.",
+    intro: {
+      heading: "Let's talk about your body",
+      body: "Not to analyze it or fix it — just to understand it a little better. These questions are about your lived experience: where you feel at home, where you feel tension, and how movement fits into your life right now. There are no wrong answers. Your body's story is exactly right.",
+      audioSrc: null,
+    },
     questions: [
       {
         id: "B1",
@@ -180,6 +185,11 @@ export const EXTENDED_INTAKE_SECTIONS = [
     emoji: "🌀",
     header: "Now let's visit your mind",
     subtext: "Where does your attention tend to go?",
+    intro: {
+      heading: "Now let's visit your mind",
+      body: "The mind is where attention lives — and attention is at the heart of everything we do in Spark. These questions explore your inner landscape: your thought patterns, your emotional weather, and what you're genuinely curious about. Honesty here shapes everything that follows.",
+      audioSrc: null,
+    },
     questions: [
       {
         id: "M1",
@@ -317,6 +327,11 @@ export const EXTENDED_INTAKE_SECTIONS = [
     emoji: "🎪",
     header: "One more — let's talk about play",
     subtext: "This one surprises people. Stay curious.",
+    intro: {
+      heading: "One more — let's talk about play",
+      body: "This section surprises people. Play isn't frivolous — it's how the nervous system resets, how creativity opens, and how we remember what it feels like to be alive without an agenda. Stay curious. There's no wrong relationship with play — only your honest one.",
+      audioSrc: null,
+    },
     questions: [
       {
         id: "P1",
