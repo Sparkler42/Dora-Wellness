@@ -12,7 +12,8 @@ const branch1 = [
   {
     q: "What does easy movement look like for you?",
     o: [
-      "\uD83C\uDFC3 I'm genuinely active \u2014 sports, hiking, gym, something physical most days",
+      "\uD83C\uDFC3 I'm genuinely active \u2014 sports, hiking, gym, dance, something physical most days",
+      "\uD83C\uDF1F I have an active lifestyle that keeps me fit \u2014 it's just part of how I live",
       "\uD83D\uDEB6 I move regularly but it's more walking and daily life than structured exercise",
       "\uD83E\uDE91 I'm mostly sedentary but when I do move, my body responds well",
       "\uD83E\uDD38 It varies wildly depending on the week",
