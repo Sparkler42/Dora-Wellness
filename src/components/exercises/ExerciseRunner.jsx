@@ -11,7 +11,7 @@ import ExerciseAudioPlayer from "./ExerciseAudioPlayer";
 export default function ExerciseRunner({ exercise, onComplete, onClose }) {
   const [step, setStep] = useState(0);
   const [time, setTime] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [paused, setPaused] = useState(true);
   const [done, setDone] = useState(false);
   const timer = useRef(null);
   const bellSignal = useRef(null); // "step" | "complete" | null
