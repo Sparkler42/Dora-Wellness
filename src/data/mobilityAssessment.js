@@ -1,5 +1,6 @@
 export const balanceOptions = [
   "\u2728 Balance and movement come naturally \u2014 my body adapts without me thinking about it",
+  "\uD83C\uDFAF I\u2019m steady and capable \u2014 and I notice I\u2019m inclined to be more attentive in certain situations",
   "\uD83C\uDF3F Pretty solid overall \u2014 the occasional wobble but nothing that stops me",
   "\uD83D\uDE05 Flat ground is fine, but hills, stairs, and slopes deserve my full attention",
   "\uD83E\uDD14 I've become deliberate about surfaces, sudden movements, and getting up too fast",
@@ -139,4 +140,4 @@ const branch4 = [
   },
 ];
 
-export const mobilityBranches = [branch1, branch2, branch3, branch4, branch4];
+export const mobilityBranches = [branch1, branch1, branch2, branch3, branch4, branch4];
