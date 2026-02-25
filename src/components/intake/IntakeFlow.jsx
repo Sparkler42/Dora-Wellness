@@ -937,11 +937,13 @@ export default function IntakeFlow({ skipWelcome = false }) {
       ? (ans || "").trim().length > 0
       : q.tp === "multi" || q.tp === "multi3"
         ? (ans || []).length > 0
-        : !!ans;
+        : q.otherOption && ans === q.otherOption
+          ? (answers[q.otherFieldId] || "").trim().length > 0
+          : !!ans;
 
   const next = () => {
-    // Intercept after name (step 0) to enter mobility assessment
-    if (step === 0 && mobilityPhase === null && mobilityBalance === null) {
+    // Intercept after relativeAge (step 2) to enter mobility assessment
+    if (step === 2 && mobilityPhase === null && mobilityBalance === null) {
       setMobilityPhase("welcome");
       return;
     }
@@ -1056,6 +1058,15 @@ export default function IntakeFlow({ skipWelcome = false }) {
                 <InfoButton option={o} onOpen={setDescriptor} />
               </button>
             ))}
+            {q.otherOption && ans === q.otherOption && (
+              <input
+                value={answers[q.otherFieldId] || ""}
+                onChange={(e) => setAnswers((p) => ({ ...p, [q.otherFieldId]: e.target.value }))}
+                placeholder={q.otherPh || "Tell us more..."}
+                autoFocus
+                style={{ width: "100%", padding: "16px 18px", borderRadius: 14, border: `1.5px solid ${T.bgW}`, background: T.bgC, fontSize: 15, fontFamily: "'DM Sans'", color: T.tx, outline: "none", boxSizing: "border-box", marginTop: 4 }}
+              />
+            )}
           </div>
         )}
 

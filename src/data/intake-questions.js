@@ -1,5 +1,24 @@
 export const intakeQuestions = [
   { id: "name", q: "What should we call you?", tp: "text", ph: "Your first name" },
+  { id: "arrivalStory", q: "How did you find your way to Spark today?", sub: "We\u2019re curious \u2014 everyone\u2019s story is a little different", tp: "choice", o: [
+    "\uD83D\uDC65 A friend or someone I trust recommended it \u2014 they thought I would appreciate what you offer",
+    "\uD83D\uDD0D I went looking for something \u2014 an app to help me feel better, move better, or be more mindful",
+    "\uD83D\uDCF1 I saw it somewhere \u2014 social media, an article, or an ad caught my attention",
+    "\uD83E\uDDD8 My yoga teacher / bodyworker / coach pointed me here \u2014 I trust their judgment",
+    "\uD83C\uDFC6 I learned it was one of the highest rated apps on how to feel good \u2014 I want some of that",
+    "\uD83C\uDFA7 I heard David or Caroline speak or teach \u2014 and I wanted more of what they were offering",
+    "\uD83D\uDCBB I was browsing and something about it stopped me \u2014 I\u2019m not sure exactly why yet, but it feels good so far",
+    "\uD83C\uDF00 Honestly I don\u2019t remember \u2014 but I\u2019m intrigued to learn more",
+    "\u270F\uFE0F Something else brought me here",
+  ], otherOption: "\u270F\uFE0F Something else brought me here", otherFieldId: "arrivalStoryOther", otherPh: "Tell us in your own words..." },
+  { id: "relativeAge", q: "On any given day \u2014 maybe even today \u2014 how old do you feel in your body?", tp: "choice", o: [
+    "\uD83C\uDF05 Still pretty convinced it's 25 \u2014 ready before I am",
+    "\uD83C\uDF3F About right for the calendar \u2014 steady and familiar",
+    "\u2615 Has a few opinions, especially before coffee",
+    "\uD83D\uDD27 Takes some convincing and a little warming up",
+    "\uD83D\uDCCB It's been keeping score \u2014 and some mornings it shows",
+    "\uD83C\uDF26\uFE0F Sends a different report every day",
+  ] },
   { id: "lifeStage", q: "Which of these feel like you? Pick up to three.", sub: "Not asking your age \u2014 asking how you carry it.", tp: "multi3", o: [
     "\uD83C\uDF93 Diploma's still fresh, rent is not",
     "\uD83D\uDD25 Fully in motion and full of questions",
