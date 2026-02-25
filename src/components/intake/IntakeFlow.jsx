@@ -9,6 +9,7 @@ import { notifCategories } from "../../data/notifications";
 import { useApp } from "../../context/AppContext";
 import WelcomeScreen from "./WelcomeScreen";
 import AudioIntroScreen from "./AudioIntroScreen";
+import SparkStory from "./SparkStory";
 
 function InfoButton({ option, onOpen }) {
   if (!intakeDescriptors[option]) return null;
@@ -160,6 +161,7 @@ export default function IntakeFlow({ skipWelcome = false }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState({});
   const [showFork, setShowFork] = useState(false);
+  const [showSparkStory, setShowSparkStory] = useState(false);
   const [descriptor, setDescriptor] = useState(null);
 
   // Mobility assessment state
@@ -209,6 +211,20 @@ export default function IntakeFlow({ skipWelcome = false }) {
         onContinue={() => {
           setAudioIntroSeen(true);
           setShowAudioIntro(false);
+        }}
+      />
+    );
+  }
+
+  if (showSparkStory) {
+    return (
+      <SparkStory
+        arrivalValue={answers.arrivalStory || ""}
+        arrivalOther={answers.arrivalStoryOther || ""}
+        userName={answers.name || ""}
+        onContinue={() => {
+          setShowSparkStory(false);
+          setStep(2); // advance to relativeAge
         }}
       />
     );
@@ -942,6 +958,11 @@ export default function IntakeFlow({ skipWelcome = false }) {
           : !!ans;
 
   const next = () => {
+    // Intercept after arrivalStory (step 1) to show SparkStory
+    if (step === 1) {
+      setShowSparkStory(true);
+      return;
+    }
     // Intercept after relativeAge (step 2) to enter mobility assessment
     if (step === 2 && mobilityPhase === null && mobilityBalance === null) {
       setMobilityPhase("welcome");
